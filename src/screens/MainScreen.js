@@ -27,7 +27,7 @@ import {Voximplant} from 'react-native-voximplant';
 import COLOR from '../styles/Color';
 import COLOR_SCHEME from '../styles/ColorScheme';
 import styles from '../styles/Styles';
-import {Header, InputGroup, Left, Right, Icon} from "native-base";
+import {Header, InputGroup, Left, Right, Icon, Body, Title} from "native-base";
 
 
 export default class MainScreen extends React.Component {
@@ -154,6 +154,9 @@ export default class MainScreen extends React.Component {
                         <Left style={{alignItems: 'flex-start'}}>
                             <Icon name={'menu'} style={{alignSelf:'flex-start', color : 'white'}}  type="MaterialIcons" onPress={() => this.props.navigation.openDrawer()}/>
                         </Left>
+                        <Body>
+                        <Title style={{color : '#8197c0'}}>Avukata Sor</Title>
+                        </Body>
                         <Right>
 
                         </Right>

@@ -9,6 +9,7 @@ import LoginScreen from '../screens/LoginScreen';
 import MainScreen from '../screens/MainScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import CallScreen from '../screens/CallScreen';
+import LawyerList from "../screens/LawyerList";
 import IncomingCallScreen from '../screens/IncomingCallScreen';
 import {
     SafeAreaView,
@@ -22,28 +23,44 @@ import {
 } from 'react-native';
 import COLOR from '../styles/Color';
 import React from "react";
-import {Icon} from "native-base";
+import {Icon, InputGroup} from "native-base";
 import styles from "../styles/Styles";
+import LoginManager from '../manager/LoginManager';
+import * as navigation from "react-navigation";
+import BuyCredit from "../screens/BuyCredit";
 
 
 const CustomDrawer = (props) => (
-    <SafeAreaView style={{flex: 1, color:'white'}}>
-        <ImageBackground source={require('../assets/drawer_bg.png')} style={{width: '100%', height: '100%', isFlex : '1'}}  resizeMode={'cover'}>
-        <View style={{height: 100, justifyContent:'center', alignItems: 'center'}}>
-            <Image source = {require('../assets/user_icon.png')} style={{height:70, width: 70, borderRadius:35}}/>
-        </View>
-        <ScrollView>
+    <SafeAreaView style={{flex: 1, color: 'white'}}>
+        <ImageBackground source={require('../assets/drawer_bg.png')}
+                         style={{width: '100%', height: '100%', isFlex: '1'}} resizeMode={'cover'}>
+            <View style={{height: 100, justifyContent: 'center', alignItems: 'center'}}>
+                <Image source={require('../assets/user_icon.png')} style={{height: 70, width: 70, borderRadius: 35}}/>
+            </View>
+            <ScrollView>
 
-            <DrawerItems {...props}  style={{backgroundColor:'white', color:'white'}}/>
-        </ScrollView>
-            <View >
-                <TouchableHighlight style={styles.login_button} onPress={() => this.loginClicked()}>
-                    <Text style={styles.login_button_text}>
-Çıkış
-                    </Text>
+                <DrawerItems {...props} style={{backgroundColor: 'white', color: 'white'}}/>
+            </ScrollView>
+            <View style={styles.container_nav}>
+                <TouchableHighlight style={styles.settings_button} onPress={() => _goToSettings(props)}>
+                    <View style={{alignItems:'center', justifyContent:'center',}}>
+                        <Icon name={'settings'} size={25} style={{color:'#8197c0'}} type="MaterialIcons"/>
+                        <Text style={styles.settings_button_text}>
+                            Ayarlar
+                        </Text>
+                    </View>
+                </TouchableHighlight>
+
+                <TouchableHighlight style={styles.exit_button} onPress={() => _goToLogin(props)}>
+                    <View style={{alignItems:'center', justifyContent:'center',}}>
+                        <Icon name={'exit-to-app'} size={25} style={{color:'#8197c0'}} type="MaterialIcons"/>
+                        <Text style={styles.exit_button_text}>
+                            Çıkış
+                        </Text>
+                    </View>
                 </TouchableHighlight>
             </View>
-            </ImageBackground>
+        </ImageBackground>
     </SafeAreaView>
 );
 
@@ -52,17 +69,20 @@ const AppStack = createDrawerNavigator(
     {
         Main: {
             screen: MainScreen,
-            title: "dee",
-            label: "asd"
+        },
+        LawyerList: {
+          screen:LawyerList
+        },
+        BuyCredit: {
+            screen: BuyCredit
         },
         Settings: {
             screen: SettingsScreen,
-title:'Ayarlar'
         }
-    },{
-        contentComponent : CustomDrawer,
+    }, {
+        contentComponent: CustomDrawer,
         contentOptions: {
-            labelStyle: {color: '#8197c0', fontSize: 20, fontFamily:'Roboto' },
+            labelStyle: {color: '#8197c0', fontSize: 20, fontFamily: 'Roboto'},
             activeTintColor: '#8197c0',
         }
     }
@@ -80,7 +100,17 @@ const RootStack = createSwitchNavigator(
     }
 );
 
+function _goToLogin (props) {
 
+
+    LoginManager.getInstance().logout();
+    props.navigation.navigate("Login");
+};
+
+function _goToSettings(props){
+    props.navigation.navigate("Settings");
+
+};
 export default RootStack;
 
 

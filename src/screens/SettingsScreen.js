@@ -5,16 +5,22 @@
 'use strict';
 
 import React from "react";
-import {ScrollView, AsyncStorage, Platform} from "react-native";
+import {ScrollView, AsyncStorage, Platform, View} from "react-native";
 import {SafeAreaView, StatusBar} from "react-native";
 import {SettingsSwitch} from 'react-native-settings-components';
 
 import styles from "../styles/Styles";
 import COLOR_SCHEME from "../styles/ColorScheme";
 import COLOR from "../styles/Color";
+import {Body, Header, Icon, Left, Right, Title} from "native-base";
+import HeaderComponent from "../components/HeaderComponent";
+import CallButton from "./CallScreen";
 
 export default class SettingsScreen extends React.Component {
     static navigationOptions = {
+        drawerIcon: ({tintColor }) => (
+            <Icon name ="perm-identity" type="MaterialIcons" style={{color: 'white'}}/>
+        ),
         title: "Profilim"
     };
 
@@ -38,23 +44,18 @@ export default class SettingsScreen extends React.Component {
         return(
             <SafeAreaView style={styles.safearea}>
                 <StatusBar hidden={true}/>
-                <ScrollView style={{flex: 1}}>
-                    {Platform.OS === 'ios' && parseInt(Platform.Version, 10) >= 10 ? (
-                        <SettingsSwitch
-                            title={'Use CallKit'}
-                            onSaveValue={(value) => {
-                                console.log(`SettingsScreen: use CallKit: ${value}`);
-                                this.setState({
-                                    useCallKit: value
-                                });
-                                AsyncStorage.setItem('useCallKit', JSON.stringify(value));
-                            }}
-                            value={this.state.useCallKit}
-                        />
-                    ) : (
-                        null
-                    )}
-                </ScrollView>
+                <Header style={{backgroundColor: 'transparent', shadowColor: 'transparent', shadowRadius: 0, elevation:0}}>
+
+                    <Left style={{alignItems: 'flex-start'}}>
+                        <Icon name={'menu'} style={{alignSelf:'flex-start', color : 'white'}}  type="MaterialIcons" onPress={() => this.props.navigation.openDrawer()}/>
+                    </Left>
+                    <Body>
+                    <Title style={{color : '#8197c0'}}>Avukata Sor</Title>
+                    </Body>
+                    <Right>
+
+                    </Right>
+                </Header>
 
             </SafeAreaView>
         );

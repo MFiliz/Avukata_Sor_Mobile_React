@@ -53,7 +53,7 @@ export default StyleSheet.create({
         // marginBottom: 10,
         color: COLOR.WHITE,
         height: 40,
-        borderWidth:0,
+        borderWidth: 0,
         // borderBottomColor: COLOR.ACCENT,
         // borderBottomWidth: 1,
         // borderRadius: 4,
@@ -116,5 +116,58 @@ export default StyleSheet.create({
         alignSelf: 'center',
         textAlign: 'center'
 
-    }
+    },
+    exit_button: {
+        backgroundColor: 'transparent',
+        flex:1,
+        paddingBottom:25,
+        justifyContent:'center',
+        alignItems:'center'
+
+
+    },
+    exit_button_text: {
+        color: '#8197c0',
+        fontFamily: 'Roboto',
+
+        fontSize: 20,
+    },
+    exit_button_icon:{
+
+
+
+    },
+    settings_button: {
+        backgroundColor: 'transparent',
+        flex:1,
+        paddingBottom:25,
+        justifyContent:'center',
+        alignItems:'center'
+
+    },
+    settings_button_text: {
+        color: '#8197c0',
+        fontFamily: 'Roboto',
+
+        fontSize: 20,
+    },
+    settings_button_icon:{
+        justifyContent: 'center',
+        alignSelf:'center',
+        alignItems:'center'
+
+
+    },
+    container_nav:{
+        color:'red',
+        flex: 1,
+        flexDirection:'row',
+        alignItems:'flex-end',
+        justifyContent:'space-around',
+
+
+    },
+
+
+
 });
