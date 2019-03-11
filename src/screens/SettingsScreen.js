@@ -15,7 +15,7 @@ import COLOR from "../styles/Color";
 
 export default class SettingsScreen extends React.Component {
     static navigationOptions = {
-        title: "Settings"
+        title: "Profilim"
     };
 
     constructor() {
@@ -37,7 +37,7 @@ export default class SettingsScreen extends React.Component {
     render() {
         return(
             <SafeAreaView style={styles.safearea}>
-                <StatusBar barStyle={COLOR_SCHEME.LIGHT} backgroundColor={COLOR.PRIMARY_DARK} />
+                <StatusBar hidden={true}/>
                 <ScrollView style={{flex: 1}}>
                     {Platform.OS === 'ios' && parseInt(Platform.Version, 10) >= 10 ? (
                         <SettingsSwitch

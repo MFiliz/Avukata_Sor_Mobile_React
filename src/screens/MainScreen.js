@@ -16,7 +16,7 @@ import {
     StatusBar,
     PermissionsAndroid,
     Platform,
-    AsyncStorage
+    AsyncStorage, Image, ImageBackground, KeyboardAvoidingView
 } from 'react-native';
 
 import CallButton from '../components/CallButton';
@@ -27,29 +27,39 @@ import {Voximplant} from 'react-native-voximplant';
 import COLOR from '../styles/Color';
 import COLOR_SCHEME from '../styles/ColorScheme';
 import styles from '../styles/Styles';
+import {Header, InputGroup, Left, Right, Icon} from "native-base";
+
 
 export default class MainScreen extends React.Component {
-    static navigationOptions = ({ navigation }) => {
-        const params = navigation.state.params || {};
+    // static defaultNavigationOptions = ({ navigation }) => {
+    //     const params = navigation.state.params || {};
+    //
+    //     return {
+    //         headerLeft: (
+    //             <TouchableOpacity onPress={params.backClicked}>
+    //                 <Text style={styles.headerButton}>
+    //                     Logout
+    //                 </Text>
+    //             </TouchableOpacity>
+    //         ),
+    //         headerRight: (
+    //             <TouchableOpacity onPress={params.settingsClick}>
+    //                 <Text style={styles.headerButton}>
+    //                     Settings
+    //                 </Text>
+    //             </TouchableOpacity>
+    //         ),
+    //         title: LoginManager.getInstance().displayName,
+    //     };
+    // };
 
-        return {
-            headerLeft: (
-                <TouchableOpacity onPress={params.backClicked}>
-                    <Text style={styles.headerButton}>
-                        Logout
-                    </Text>
-                </TouchableOpacity>
-            ),
-            headerRight: (
-                <TouchableOpacity onPress={params.settingsClick}>
-                    <Text style={styles.headerButton}>
-                        Settings
-                    </Text>
-                </TouchableOpacity>
-            ),
-            title: LoginManager.getInstance().displayName,
-        };
+    static navigationOptions ={
+      drawerIcon: ({tintColor }) => (
+         <Icon name ="home" type="MaterialIcons" style={{color: 'white'}}/>
+      ),title:'Ana Sayfa'
     };
+
+
     constructor(props) {
         super(props);
         this.number = '';
@@ -73,8 +83,10 @@ export default class MainScreen extends React.Component {
     };
 
     _goToLogin = () => {
-        LoginManager.getInstance().logout();
-        this.props.navigation.navigate("Login");
+
+
+         LoginManager.getInstance().logout();
+         this.props.navigation.navigate("Login");
     };
 
     _connectionClosed = () => {
@@ -131,8 +143,21 @@ export default class MainScreen extends React.Component {
     render() {
         return (
             <SafeAreaView style={styles.safearea}>
-                <StatusBar barStyle={COLOR_SCHEME.LIGHT} backgroundColor={COLOR.PRIMARY_DARK} />
+                <StatusBar hidden={true} />
+
+
+                <ImageBackground source={require('../assets/main_background.png')} style={{width: '100%', height: '100%', isFlex : '1'}}  resizeMode={'cover'}>
                 <View style={styles.useragent}>
+
+                    <Header style={{backgroundColor: 'transparent', shadowColor: 'transparent', shadowRadius: 0, elevation:0}}>
+
+                        <Left style={{alignItems: 'flex-start'}}>
+                            <Icon name={'menu'} style={{alignSelf:'flex-start', color : 'white'}}  type="MaterialIcons" onPress={() => this.props.navigation.openDrawer()}/>
+                        </Left>
+                        <Right>
+
+                        </Right>
+                    </Header>
                     <TextInput
                         underlineColorAndroid='transparent'
                         style={[styles.forminput, styles.margin]}
@@ -164,6 +189,7 @@ export default class MainScreen extends React.Component {
                         </TouchableHighlight>
                     </Modal>
                 </View>
+                </ImageBackground>
             </SafeAreaView>
         );
     }

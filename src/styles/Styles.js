@@ -4,13 +4,12 @@
 
 'use strict';
 
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
 import COLOR from "./Color";
 
 export default StyleSheet.create({
     safearea: {
         flex: 1,
-        backgroundColor: COLOR.WHITE,
     },
     aligncenter: {
         flexDirection: 'column',
@@ -39,6 +38,7 @@ export default StyleSheet.create({
     },
     loginform: {
         paddingHorizontal: 20,
+        marginTop: 250,
         alignItems: 'stretch'
     },
     loginbutton: {
@@ -49,13 +49,14 @@ export default StyleSheet.create({
         textAlign: 'center'
     },
     forminput: {
-        padding: 5,
-        marginBottom: 10,
-        color: COLOR.ACCENT,
+        // padding: 5,
+        // marginBottom: 10,
+        color: COLOR.WHITE,
         height: 40,
-        borderColor: COLOR.ACCENT,
-        borderWidth: 1,
-        borderRadius: 4,
+        borderWidth:0,
+        // borderBottomColor: COLOR.ACCENT,
+        // borderBottomWidth: 1,
+        // borderRadius: 4,
     },
     useragent: {
         flex: 1,
@@ -98,5 +99,22 @@ export default StyleSheet.create({
         justifyContent: 'center',
         alignSelf: 'center',
         fontSize: 22,
+    },
+    login_button: {
+
+        backgroundColor: '#cc3333',
+        borderRadius: 60,
+        justifyContent: 'center',
+        paddingTop: 20,
+        paddingBottom: 20,
+        marginTop: 50,
+        marginBottom: 50
+    },
+    login_button_text: {
+        color: 'white',
+        fontSize: 18,
+        alignSelf: 'center',
+        textAlign: 'center'
+
     }
 });
