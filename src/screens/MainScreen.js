@@ -28,6 +28,7 @@ import COLOR from '../styles/Color';
 import COLOR_SCHEME from '../styles/ColorScheme';
 import styles from '../styles/Styles';
 import {Header, InputGroup, Left, Right, Icon, Body, Title} from "native-base";
+import * as navigation from "react-navigation";
 
 
 export default class MainScreen extends React.Component {
@@ -65,11 +66,19 @@ export default class MainScreen extends React.Component {
         this.number = '';
         this.state = {
             isModalOpen: false,
-            modalText: ''
+            modalText: '',
+            isSuccess: props.navigation.getParam('isSuccess',3),
         }
     }
 
     componentDidMount() {
+        if (this.state.isSuccess == 1){
+            this.setState({ isModalOpen: true, modalText: 'Ödemeniz Başarılı Bir Şekilde Alınmıştır' });
+        }
+        if(this.state.isSuccess == 0){
+            this.setState({ isModalOpen: true, modalText: 'Ödeme Esnasında Bir Sorun Oluştu' });
+        }
+
         this.props.navigation.setParams({ settingsClick: this._goToSettings, backClicked: this._goToLogin });
         LoginManager.getInstance().on('onConnectionClosed', this._connectionClosed);
     }
@@ -141,6 +150,7 @@ export default class MainScreen extends React.Component {
     }
 
     render() {
+
         return (
             <SafeAreaView style={styles.safearea}>
                 <StatusBar hidden={true} />
@@ -161,19 +171,19 @@ export default class MainScreen extends React.Component {
 
                         </Right>
                     </Header>
-                    <TextInput
-                        underlineColorAndroid='transparent'
-                        style={[styles.forminput, styles.margin]}
-                        onChangeText={(text) => { this.number = text }}
-                        placeholder="Call to"
-                        defaultValue={this.number}
-                        autoCapitalize='none'
-                        autoCorrect={false}
-                        blurOnSubmit={true} />
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-around', height: 90 }}>
-                        <CallButton icon_name='call' color={COLOR.ACCENT} buttonPressed={() => this.makeCall(false)} />
-                        <CallButton icon_name='videocam' color={COLOR.ACCENT} buttonPressed={() => this.makeCall(true)} />
-                    </View>
+                    {/*<TextInput*/}
+                        {/*underlineColorAndroid='transparent'*/}
+                        {/*style={[styles.forminput, styles.margin]}*/}
+                        {/*onChangeText={(text) => { this.number = text }}*/}
+                        {/*placeholder="Call to"*/}
+                        {/*defaultValue={this.number}*/}
+                        {/*autoCapitalize='none'*/}
+                        {/*autoCorrect={false}*/}
+                        {/*blurOnSubmit={true} />*/}
+                    {/*<View style={{ flexDirection: 'row', justifyContent: 'space-around', height: 90 }}>*/}
+                        {/*<CallButton icon_name='call' color={COLOR.ACCENT} buttonPressed={() => this.makeCall(false)} />*/}
+                        {/*<CallButton icon_name='videocam' color={COLOR.ACCENT} buttonPressed={() => this.makeCall(true)} />*/}
+                    {/*</View>*/}
 
                     <Modal
                         animationType='fade'

@@ -5,15 +5,9 @@
 'use strict';
 
 import React from "react";
-import {ScrollView, AsyncStorage, Platform, Text, View} from "react-native";
-import {SafeAreaView, StatusBar} from "react-native";
-import {SettingsSwitch} from 'react-native-settings-components';
-
-import styles from "../styles/Styles";
-import COLOR_SCHEME from "../styles/ColorScheme";
-import COLOR from "../styles/Color";
+import {AsyncStorage, WebView} from 'react-native';
 import {Header, Icon, Left, Right,Body, Title} from "native-base";
-
+let _this;
 export default class BuyCredit extends React.Component {
     static navigationOptions = {
         drawerIcon: ({tintColor }) => (
@@ -22,43 +16,77 @@ export default class BuyCredit extends React.Component {
         title: "Kredi Al"
     };
 
-    constructor() {
-        super();
+    componentDidMount() {
+        this._loadInitialState().done();
+    }
+
+    handleNavigationStateChange = navState => {
+        console.log(navState);
+        if(JSON.stringify(navState).includes('PAYMENT_AUTHORIZED')){
+            this.props.navigation.navigate('Main',{isSuccess: 1});
+
+        }
+        if(JSON.stringify(navState).includes('CARD_NOTAUTHORIZED') || JSON.stringify(navState).includes('INVALID')){
+            this.props.navigation.navigate('Main',{isSuccess: 0});
+        }
+    };
+
+    constructor(props) {
+        super(props);
+        this.hash ='';
         this.state = {
-            useCallKit: false
+            tken:'',
+            paymentSuccess: false
         };
     }
 
-    componentDidMount() {
-        AsyncStorage.getItem('useCallKit')
-            .then((value) => {
-                this.setState({
-                    useCallKit: JSON.parse(value)
-                })
-            });
-    }
+    _loadInitialState = async () => {
+        _this = this;
+        (async () => {
+            const usernameValue = await AsyncStorage.getItem('token');
+            _this.setState({tken: usernameValue});
+
+        })();
+
+    };
+
+
+
+
+
 
     render() {
+        const injectedJs = `window.postMessage(window.location.href);`;
+
         return(
-            <SafeAreaView style={styles.safearea}>
-                <StatusBar hidden={true}/>
-                <View style={{flex: 1, backgroundColor :'gray'}}>
-
-                    <Header style={{backgroundColor: 'transparent', shadowColor: 'transparent', shadowRadius: 0, elevation:0}}>
-
-                        <Left style={{alignItems: 'flex-start'}}>
-                            <Icon name={'menu'} style={{alignSelf:'flex-start', color : 'white'}}  type="MaterialIcons" onPress={() => this.props.navigation.openDrawer()}/>
-                        </Left>
-                        <Body>
-                        <Title style={{color : '#8197c0'}}>Avukata Sor</Title>
-                        </Body>
-                        <Right>
-
-                        </Right>
-                    </Header>
-                    <Text>Kredi Alma Ekranı</Text>
-                </View>
-            </SafeAreaView>
+            <WebView
+                source={{ uri: 'https://avukatasortest.azurewebsites.net/account/products?token=' + this.state.tken }}
+                bounces={true}
+                style={[
+                    {
+                        flex: 1
+                    },
+                ]}
+                injectedJavaScript={injectedJs}
+                startInLoadingState
+                scalesPageToFit
+                javaScriptEnabledAndroid={true}
+                javaScriptEnabled={true}
+                onNavigationStateChange={this.handleNavigationStateChange}
+                onMessage={event => {
+                    alert('MESSAGE >>>>' + event.nativeEvent.data);
+                }}
+                onLoadStart={() => {
+                    console.log("LOAD START ");
+                }}
+                onLoadEnd={() => {
+                    console.log('LOAD END');
+                }}
+                onError={err => {
+                    console.log('ERROR ');
+                    console.log(err);
+                }}
+            />
         );
 
     }

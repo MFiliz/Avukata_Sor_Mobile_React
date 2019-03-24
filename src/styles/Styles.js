@@ -61,11 +61,12 @@ export default StyleSheet.create({
     useragent: {
         flex: 1,
         flexDirection: 'column',
+
     },
     selfview: {
         position: 'absolute',
-        right: 20,
-        bottom: 20,
+        right: 0,
+        bottom: 10,
         width: 100,
         height: 120,
     },
@@ -74,7 +75,8 @@ export default StyleSheet.create({
     },
     videoPanel: {
         flex: 1,
-        position: 'relative'
+        position: 'relative',
+
     },
     call_controls: {
         height: 70,
@@ -99,16 +101,24 @@ export default StyleSheet.create({
         justifyContent: 'center',
         alignSelf: 'center',
         fontSize: 22,
+        color:COLOR.WHITE
+    },
+    incoming_call1: {
+        justifyContent: 'center',
+        alignSelf: 'center',
+        fontSize: 30,
+        marginTop:50,
+        color:COLOR.WHITE
     },
     login_button: {
 
         backgroundColor: '#cc3333',
         borderRadius: 60,
         justifyContent: 'center',
-        paddingTop: 20,
-        paddingBottom: 20,
-        marginTop: 50,
-        marginBottom: 50
+        paddingTop: 15,
+        paddingBottom: 15,
+        marginTop: 30,
+        marginBottom: 30
     },
     login_button_text: {
         color: 'white',
@@ -166,6 +176,27 @@ export default StyleSheet.create({
         justifyContent:'space-around',
 
 
+    },
+    signup_button_text: {
+        color: '#8197c0',
+        textAlign:'center',
+        fontSize: 16,
+        paddingBottom:30,
+    },
+    signupform: {
+        paddingHorizontal: 20,
+        marginTop: 25,
+        alignItems: 'stretch'
+    },
+    signup_button_page: {
+
+        backgroundColor: '#cc3333',
+        borderRadius: 60,
+        justifyContent: 'center',
+        paddingTop: 15,
+        paddingBottom: 15,
+        marginTop: 15,
+        marginBottom: 15
     },
 
 

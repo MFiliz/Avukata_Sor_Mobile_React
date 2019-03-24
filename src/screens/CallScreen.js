@@ -14,17 +14,18 @@ import {
     SafeAreaView,
     StatusBar,
     FlatList,
-    PermissionsAndroid
+    PermissionsAndroid, ImageBackground
 } from 'react-native';
 
-import { Voximplant } from 'react-native-voximplant';
+import {Voximplant} from 'react-native-voximplant';
 import CallButton from '../components/CallButton';
-import { Keypad } from '../components/Keypad';
+import {Keypad} from '../components/Keypad';
 import COLOR_SCHEME from '../styles/ColorScheme';
 import COLOR from '../styles/Color';
 import CallManager from '../manager/CallManager';
 import styles from '../styles/Styles';
 import VIForegroundService from "@voximplant/react-native-foreground-service";
+import {Body, Header, Icon, Left, Right, Title} from "native-base";
 
 const CALL_STATES = {
     DISCONNECTED: 'disconnected',
@@ -165,7 +166,7 @@ export default class CallScreen extends React.Component {
 
     switchKeypad() {
         let isVisible = this.state.isKeypadVisible;
-        this.setState({isKeypadVisible: !isVisible});
+        this.setState({isKeypadVisible: false});
     }
 
     async switchAudioDevice() {
@@ -236,7 +237,7 @@ export default class CallScreen extends React.Component {
                 text: 'Call in progress',
                 icon: 'ic_vox_notification'
             };
-            (async() => {
+            (async () => {
                 await VIForegroundService.createNotificationChannel(channelConfig);
                 await VIForegroundService.startService(notificationConfig);
             })();
@@ -330,105 +331,132 @@ export default class CallScreen extends React.Component {
     render() {
         return (
             <SafeAreaView style={styles.safearea}>
-                <StatusBar barStyle={Platform.OS === 'ios' ? COLOR_SCHEME.DARK : COLOR_SCHEME.LIGHT}
-                           backgroundColor={COLOR.PRIMARY_DARK}/>
-                <View style={styles.useragent}>
-                    <View style={styles.videoPanel}>
-                        <Voximplant.VideoView style={styles.remotevideo} videoStreamId={this.state.remoteVideoStreamId}
-                                              scaleType={Voximplant.RenderScaleType.SCALE_FIT}/>
-                        {this.state.isVideoSent ? (
-                            <Voximplant.VideoView style={styles.selfview} videoStreamId={this.state.localVideoStreamId}
-                                                  scaleType={Voximplant.RenderScaleType.SCALE_FIT} showOnTop={true}/>
+                <ImageBackground source={require('../assets/flat_bg.png')}
+                                 style={{width: '100%', height: '100%', isFlex: '1'}} resizeMode={'cover'}>
+                    <StatusBar hidden={true}/>
+                    <Header style={{
+                        backgroundColor: 'transparent',
+                        shadowColor: 'transparent',
+                        shadowRadius: 0,
+                        elevation: 0
+                    }}>
+
+                        <Left style={{alignItems: 'flex-start'}}>
+                            <Icon name={'arrow-back'} style={{alignSelf: 'flex-start', color: 'white'}} type="MaterialIcons" onPress={() => this.props.navigation.navigate('Main')}/>
+                        </Left>
+                        <Body>
+                        <Title style={{color: '#8197c0'}}>Avukata Sor</Title>
+                        </Body>
+                        <Right>
+
+                        </Right>
+                    </Header>
+                    <View style={{flexDirection: 'column', justifyContent:'center', paddingBottom:20}}>
+                        <Text style={{fontSize:25, color:'white', textAlign: 'center'}}>Gürkan Çoban</Text>
+                        <Text style={{fontSize:15, color:'white', textAlign:'center'}}>Ceza Avukatı</Text>
+                        <Text style={{fontSize:25, color:'white', textAlign:'center'}}>15:00</Text>
+                    </View>
+                    <View style={styles.useragent}>
+                        <View style={styles.videoPanel}>
+                            <Voximplant.VideoView style={styles.remotevideo}
+                                                  videoStreamId={this.state.remoteVideoStreamId}
+                                                  scaleType={Voximplant.RenderScaleType.SCALE_FIT}/>
+                            {this.state.isVideoSent ? (
+                                <Voximplant.VideoView style={styles.selfview}
+                                                      videoStreamId={this.state.localVideoStreamId}
+                                                      scaleType={Voximplant.RenderScaleType.SCALE_FIT}
+                                                      showOnTop={true}/>
+                            ) : (
+                                null
+                            )}
+                        </View>
+
+                        <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                            <Text style={styles.call_connecting_label}>{this.state.callState}</Text>
+                        </View>
+
+                        {this.state.isKeypadVisible ? (
+                            <Keypad keyPressed={(e) => this._keypadPressed(e)}/>
                         ) : (
                             null
                         )}
-                    </View>
 
-                    <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                        <Text style={styles.call_connecting_label}>{this.state.callState}</Text>
-                    </View>
+                        <View style={styles.call_controls}>
+                            <View style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-around',
+                                backgroundColor: 'transparent'
+                            }}>
+                                {this.state.isAudioMuted ? (
+                                    <CallButton icon_name='mic' color={COLOR.ACCENT}
+                                                buttonPressed={() => this.muteAudio()}/>
+                                ) : (
+                                    <CallButton icon_name='mic-off' color={COLOR.ACCENT}
+                                                buttonPressed={() => this.muteAudio()}/>
+                                )}
+                                {/*<CallButton icon_name='dialpad' color={COLOR.ACCENT}*/}
+                                            {/*buttonPressed={() => this.switchKeypad()}/>*/}
+                                <CallButton icon_name={this.state.audioDeviceIcon} color={COLOR.ACCENT}
+                                            buttonPressed={() => this.switchAudioDevice()}/>
+                                {this.state.isVideoSent ? (
+                                    <CallButton icon_name='videocam-off' color={COLOR.ACCENT}
+                                                buttonPressed={() => this.sendVideo(false)}/>
+                                ) : (
+                                    <CallButton icon_name='video-call' color={COLOR.ACCENT}
+                                                buttonPressed={() => this.sendVideo(true)}/>
+                                )}
+                                <CallButton icon_name='call-end' color={COLOR.RED}
+                                            buttonPressed={() => this.endCall()}/>
 
-                    {this.state.isKeypadVisible ? (
-                        <Keypad keyPressed={(e) => this._keypadPressed(e)}/>
-                    ) : (
-                        null
-                    )}
-
-                    <View style={styles.call_controls}>
-                        <View style={{
-                            flexDirection: 'row',
-                            justifyContent: 'space-around',
-                            backgroundColor: 'transparent'
-                        }}>
-                            {this.state.isAudioMuted ? (
-                                <CallButton icon_name='mic' color={COLOR.ACCENT}
-                                            buttonPressed={() => this.muteAudio()}/>
-                            ) : (
-                                <CallButton icon_name='mic-off' color={COLOR.ACCENT}
-                                            buttonPressed={() => this.muteAudio()}/>
-                            )}
-                            <CallButton icon_name='dialpad' color={COLOR.ACCENT}
-                                        buttonPressed={() => this.switchKeypad()}/>
-                            <CallButton icon_name={this.state.audioDeviceIcon} color={COLOR.ACCENT}
-                                        buttonPressed={() => this.switchAudioDevice()}/>
-                            {this.state.isVideoSent ? (
-                                <CallButton icon_name='videocam-off' color={COLOR.ACCENT}
-                                            buttonPressed={() => this.sendVideo(false)}/>
-                            ) : (
-                                <CallButton icon_name='video-call' color={COLOR.ACCENT}
-                                            buttonPressed={() => this.sendVideo(true)}/>
-                            )}
-                            <CallButton icon_name='call-end' color={COLOR.RED} buttonPressed={() => this.endCall()}/>
-
+                            </View>
                         </View>
+
+                        <Modal
+                            animationType='fade'
+                            transparent={true}
+                            visible={this.state.audioDeviceSelectionVisible}
+                            onRequestClose={() => {
+                            }}>
+                            <TouchableHighlight
+                                onPress={() => {
+                                    this.setState({audioDeviceSelectionVisible: false})
+                                }}
+                                style={styles.container}>
+                                <View style={[styles.container, styles.modalBackground]}>
+                                    <View style={[styles.innerContainer, styles.innerContainerTransparent]}>
+                                        <FlatList
+                                            data={this.state.audioDevices}
+                                            keyExtractor={(item, index) => item}
+                                            ItemSeparatorComponent={this.flatListItemSeparator}
+                                            renderItem={({item}) => <Text onPress={() => {
+                                                this.selectAudioDevice(item)
+                                            }}> {item} </Text>}
+                                        />
+                                    </View>
+                                </View>
+                            </TouchableHighlight>
+                        </Modal>
+
+
+                        <Modal
+                            animationType='fade'
+                            transparent={true}
+                            visible={this.state.isModalOpen}
+                            onRequestClose={() => {
+                            }}>
+                            <TouchableHighlight
+                                onPress={(e) => this._closeModal()}
+                                style={styles.container}>
+                                <View style={[styles.container, styles.modalBackground]}>
+                                    <View
+                                        style={[styles.innerContainer, styles.innerContainerTransparent]}>
+                                        <Text>{this.state.modalText}</Text>
+                                    </View>
+                                </View>
+                            </TouchableHighlight>
+                        </Modal>
                     </View>
-
-                    <Modal
-                        animationType='fade'
-                        transparent={true}
-                        visible={this.state.audioDeviceSelectionVisible}
-                        onRequestClose={() => {
-                        }}>
-                        <TouchableHighlight
-                            onPress={() => {
-                                this.setState({audioDeviceSelectionVisible: false})
-                            }}
-                            style={styles.container}>
-                            <View style={[styles.container, styles.modalBackground]}>
-                                <View style={[styles.innerContainer, styles.innerContainerTransparent]}>
-                                    <FlatList
-                                        data={this.state.audioDevices}
-                                        keyExtractor={(item, index) => item}
-                                        ItemSeparatorComponent={this.flatListItemSeparator}
-                                        renderItem={({item}) => <Text onPress={() => {
-                                            this.selectAudioDevice(item)
-                                        }}> {item} </Text>}
-                                    />
-                                </View>
-                            </View>
-                        </TouchableHighlight>
-                    </Modal>
-
-
-                    <Modal
-                        animationType='fade'
-                        transparent={true}
-                        visible={this.state.isModalOpen}
-                        onRequestClose={() => {
-                        }}>
-                        <TouchableHighlight
-                            onPress={(e) => this._closeModal()}
-                            style={styles.container}>
-                            <View style={[styles.container, styles.modalBackground]}>
-                                <View
-                                    style={[styles.innerContainer, styles.innerContainerTransparent]}>
-                                    <Text>{this.state.modalText}</Text>
-                                </View>
-                            </View>
-                        </TouchableHighlight>
-                    </Modal>
-                </View>
-
+                </ImageBackground>
             </SafeAreaView>
         );
     }

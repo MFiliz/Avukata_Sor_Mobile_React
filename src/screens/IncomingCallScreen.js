@@ -10,7 +10,7 @@ import {
     View,
     SafeAreaView,
     PermissionsAndroid,
-    Platform
+    Platform, ImageBackground
 } from 'react-native';
 import CallButton from '../components/CallButton';
 import CallManager from '../manager/CallManager';
@@ -105,13 +105,15 @@ export default class IncomingCallScreen extends React.Component {
     render() {
         return (
             <SafeAreaView style={[styles.safearea, styles.aligncenter]}>
-                <Text style={styles.incoming_call}>Incoming call from:</Text>
+                <ImageBackground source={require('../assets/flat_bg.png')} style={{width: '100%', height: '100%', isFlex : '1'}}  resizeMode={'cover'}>
+                <Text style={styles.incoming_call1}>Arayan Kişi</Text>
                 <Text style={styles.incoming_call}>{this.state.displayName}</Text>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-around', height: 90 }}>
-                    <CallButton icon_name='call' color={COLOR.ACCENT} buttonPressed={() => this.answerCall(false)} />
-                    <CallButton icon_name='videocam' color={COLOR.ACCENT} buttonPressed={() => this.answerCall(true)} />
+                <View style={{ flexDirection: 'row', justifyContent: 'space-around', height: 120, marginTop:50 }}>
+                    <CallButton icon_name='call' color={COLOR.WHITE} buttonPressed={() => this.answerCall(false)} />
+                    <CallButton icon_name='videocam' color={COLOR.WHITE} buttonPressed={() => this.answerCall(true)} />
                     <CallButton icon_name='call-end' color={COLOR.RED} buttonPressed={() => this.declineCall()} />
                 </View>
+                </ImageBackground>
             </SafeAreaView>
         );
     }

@@ -28,6 +28,7 @@ import styles from "../styles/Styles";
 import LoginManager from '../manager/LoginManager';
 import * as navigation from "react-navigation";
 import BuyCredit from "../screens/BuyCredit";
+import CreateUser from "../screens/CreateUser";
 
 
 const CustomDrawer = (props) => (
@@ -93,7 +94,8 @@ const RootStack = createSwitchNavigator(
         Login: LoginScreen,
         App: AppStack,
         Call: CallScreen,
-        IncomingCall: IncomingCallScreen
+        IncomingCall: IncomingCallScreen,
+        CreateUser: CreateUser,
     },
     {
         initialRouteName: 'Login',

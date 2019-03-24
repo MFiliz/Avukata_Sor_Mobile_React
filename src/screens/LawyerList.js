@@ -14,9 +14,9 @@ import {
     View,
     TextInput,
     Modal,
-    TouchableHighlight
+    TouchableHighlight, StyleSheet, Image, PermissionsAndroid,TouchableWithoutFeedback
 } from "react-native";
-import {SafeAreaView, StatusBar,FlatList} from "react-native";
+import {SafeAreaView, StatusBar, FlatList} from "react-native";
 import {SettingsSwitch} from 'react-native-settings-components';
 
 import styles from "../styles/Styles";
@@ -25,29 +25,32 @@ import COLOR from "../styles/Color";
 import {Body, Header, Icon, Left, Right, Title} from "native-base";
 import CallButton from "./MainScreen";
 import CustomRow from "../components/ListViewItem";
+import {Voximplant} from "react-native-voximplant";
+import CallManager from "../manager/CallManager";
 
 export default class LawyerList extends React.Component {
     static navigationOptions = {
-        drawerIcon: ({tintColor }) => (
-            <Icon name ="camera-alt" type="MaterialIcons" style={{color: 'white'}}/>
+        drawerIcon: ({tintColor}) => (
+            <Icon name="camera-alt" type="MaterialIcons" style={{color: 'white'}}/>
         ),
         title: "Görüşmeye Başla"
     };
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+        this.number = 'mdogankaya';
         this.state = {
             useCallKit: false,
             names: [
                 {
                     title: 'Gürkan Çoban',
                     description: 'Özgeçmiş',
-                    image_url:require('../assets/user_icon.png')
+                    image_url: require('../assets/user_icon.png')
                 },
                 {
                     title: 'Deneme2',
                     description: 'deneme2 description',
-                    image_url:require('../assets/user_icon.png')
+                    image_url: require('../assets/user_icon.png')
                 }
             ]
         };
@@ -62,36 +65,103 @@ export default class LawyerList extends React.Component {
             });
     }
 
+
+    async makeCall(isVideoCall) {
+        console.log('MainScreen: make call: ' + this.number + ', isVideo:' + isVideoCall);
+        try {
+            if (Platform.OS === 'android') {
+                let permissions = [PermissionsAndroid.PERMISSIONS.RECORD_AUDIO];
+                if (isVideoCall) {
+                    permissions.push(PermissionsAndroid.PERMISSIONS.CAMERA);
+                }
+                const granted = await PermissionsAndroid.requestMultiple(permissions);
+                const recordAudioGranted = granted['android.permission.RECORD_AUDIO'] === 'granted';
+                const cameraGranted = granted['android.permission.CAMERA'] === 'granted';
+                if (recordAudioGranted) {
+                    if (isVideoCall && !cameraGranted) {
+                        console.warn('MainScreen: makeCall: camera permission is not granted');
+                        return;
+                    }
+                } else {
+                    console.warn('MainScreen: makeCall: record audio permission is not granted');
+                    return;
+                }
+            }
+            const callSettings = {
+                video: {
+                    sendVideo: isVideoCall,
+                    receiveVideo: isVideoCall
+                }
+            };
+            if (Platform.OS === 'ios' && parseInt(Platform.Version, 10) >= 10) {
+                const useCallKitString = await AsyncStorage.getItem('useCallKit');
+                callSettings.setupCallKit = JSON.parse(useCallKitString);
+            }
+            let call = await Voximplant.getInstance().call(this.number, callSettings);
+            let callManager = CallManager.getInstance();
+            callManager.addCall(call);
+            if (callSettings.setupCallKit) {
+                callManager.startOutgoingCallViaCallKit(isVideoCall, this.number);
+            }
+            this.props.navigation.navigate('Call', {
+                callId: call.callId,
+                isVideo: isVideoCall,
+                isIncoming: false
+            });
+        } catch (e) {
+            console.warn('MainScreen: makeCall failed: ' + e);
+        }
+    }
+
+
     render() {
-        return(
+        return (
             <SafeAreaView style={styles.safearea}>
-                <StatusBar hidden={true} />
+                <StatusBar hidden={true}/>
 
 
-                <ImageBackground source={require('../assets/flat_bg.png')} style={{width: '100%', height: '100%', isFlex : '1'}}  resizeMode={'cover'}>
+                <ImageBackground source={require('../assets/flat_bg.png')}
+                                 style={{width: '100%', height: '100%', isFlex: '1'}} resizeMode={'cover'}>
                     <View style={styles.useragent}>
 
-                        <Header style={{backgroundColor: 'transparent', shadowColor: 'transparent', shadowRadius: 0, elevation:0}}>
+                        <Header style={{
+                            backgroundColor: 'transparent',
+                            shadowColor: 'transparent',
+                            shadowRadius: 0,
+                            elevation: 0
+                        }}>
 
                             <Left style={{alignItems: 'flex-start'}}>
-                                <Icon name={'menu'} style={{alignSelf:'flex-start', color : 'white'}}  type="MaterialIcons" onPress={() => this.props.navigation.openDrawer()}/>
+                                <Icon name={'menu'} style={{alignSelf: 'flex-start', color: 'white'}}
+                                      type="MaterialIcons" onPress={() => this.props.navigation.openDrawer()}/>
                             </Left>
                             <Body>
-                            <Title style={{color : '#8197c0'}}>Avukata Sor</Title>
+                            <Title style={{color: '#8197c0'}}>Avukata Sor</Title>
                             </Body>
                             <Right>
 
                             </Right>
                         </Header>
-                        <FlatList
-                            data={this.state.names}
-                            renderItem={({ item }) => <CustomRow
-                                title={item.title}
-                                description={item.description}
-                                image_url={item.image_url}/>}
+                        <TouchableWithoutFeedback style={{flex:1, height:70}} onPress={() => this.makeCall(true)}>
+                            <View style={mystyles.container}>
+                                <Image source={this.state.names[0].image_url} style={mystyles.photo}/>
+                                <View style={mystyles.container_text}>
+                                    <Text style={mystyles.title}>
+                                        {this.state.names[0].title}
+                                    </Text>
+                                    <Text style={mystyles.description}>
+                                        {this.state.names[0].description}
+                                    </Text>
+                                </View>
+                                <View style={mystyles.container_icons}>
+                                    <Icon name="event-note" type="MaterialIcons"
+                                          style={{color: '#8197c0', paddingRight: 10, fontSize: 35}}/>
+                                    <Icon name="video-call" type="MaterialIcons"
+                                          style={{color: '#8197c0', fontSize: 35}}/>
+                                </View>
 
-                            ItemSeparatorComponent = {this.renderSeparator}
-                        />
+                            </View>
+                        </TouchableWithoutFeedback>
                     </View>
                 </ImageBackground>
             </SafeAreaView>
@@ -113,3 +183,45 @@ export default class LawyerList extends React.Component {
     };
 
 }
+
+
+const mystyles = StyleSheet.create({
+    container: {
+        flex: 1,
+        height: 70,
+        flexDirection: 'row',
+        padding: 10,
+        marginLeft: 16,
+        marginRight: 16,
+        marginTop: 8,
+        marginBottom: 8,
+        //borderRadius: 5,
+        backgroundColor: 'transparent',
+        elevation: 2,
+    },
+    title: {
+        fontSize: 16,
+        color: '#8197c0',
+    },
+    container_text: {
+        flex: 1,
+        flexDirection: 'column',
+        marginLeft: 12,
+        justifyContent: 'flex-start',
+    },
+    description: {
+        fontSize: 11,
+        fontStyle: 'italic',
+        color: '#8197c0'
+    },
+    photo: {
+        height: 50,
+        width: 50,
+        borderRadius: 25
+    },
+    container_icons: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'flex-end'
+    }
+});

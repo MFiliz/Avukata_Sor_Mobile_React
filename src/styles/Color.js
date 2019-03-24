@@ -11,7 +11,8 @@ const COLOR = {
     BUTTON: "#662eff",
     WHITE: "#fff",
     BLACK: "#000",
-    RED: "#f54b5e"
+    RED: "#f54b5e",
+    AVUKAT: '#8197c0',
 };
 
 export default COLOR;

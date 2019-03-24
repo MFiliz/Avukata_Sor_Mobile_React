@@ -16,7 +16,7 @@ import {
     SafeAreaView,
     StatusBar,
     AsyncStorage,
-    ImageBackground,ScrollView, KeyboardAvoidingView, Button
+    ImageBackground, ScrollView, KeyboardAvoidingView, Button, ActivityIndicator
 } from 'react-native';
 import {Container, InputGroup, Input, Content} from 'native-base';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -35,7 +35,8 @@ export default class LoginScreen extends React.Component {
         this.state = {
             username: '',
             isModalOpen: false,
-            modalText: ''
+            modalText: '',
+            anim: false,
         }
     }
 
@@ -77,12 +78,50 @@ export default class LoginScreen extends React.Component {
         this.props.navigation.navigate('App');
     }
 
+    loginWebApp() {
+        fetch('https://avukatasorapi.azurewebsites.net/api/User/Login', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                Email: this.state.username,
+                Password: this.password,
+            })
+        }).then(res => res.json())
+            .then(response => this.setLoginCredentials(response))
+            .catch(error => console.error('Error:', error))
+    }
+
+    setLoginCredentials(response) {
+        if (response.entityData != null) {
+            (async () => {
+                await AsyncStorage.setItem('userId', response.entityData.userId);
+                await AsyncStorage.setItem('name', response.entityData.name);
+                await AsyncStorage.setItem('surname', response.entityData.surname);
+                await AsyncStorage.setItem('phone', response.entityData.phone);
+                await AsyncStorage.setItem('userName', response.entityData.userName);
+                await AsyncStorage.setItem('email', response.entityData.email);
+                await AsyncStorage.setItem('voxImplantUserId', response.entityData.voxImplantUserId.toString());
+                await AsyncStorage.setItem('token', response.entityData.token);
+                await AsyncStorage.setItem('userType', response.entityData.userType.toString());
+                await AsyncStorage.setItem('passwordHash', response.entityData.passwordHash);
+            })();
+            LoginManager.getInstance().loginWithPassword(response.entityData.userName + "@avukatasortest.mdogankaya.voximplant.com", response.entityData.passwordHash)
+        } else {
+            this.setState({anim: false});
+        }
+    }
+
     onConnectionFailed(reason) {
         this.setState({isModalOpen: true, modalText: 'Failed to connect, check internet settings'});
     }
 
     loginClicked() {
-        LoginManager.getInstance().loginWithPassword(this.state.username + ".voximplant.com", this.password);
+        this.setState({anim: true});
+        this.loginWebApp();
+        // LoginManager.getInstance().loginWithPassword(this.state.username + ".voximplant.com", this.password);
     }
 
     loginWithOneTimeKeyClicked() {
@@ -93,40 +132,30 @@ export default class LoginScreen extends React.Component {
         this.refs[nextField].focus();
     }
 
+    _signUp(){
+        this.props.navigation.navigate('CreateUser');
+    }
+
     render() {
         return (
 
-                <KeyboardAvoidingView  behavior="padding">
-                    <StatusBar hidden={true} barStyle={Platform.OS === 'ios' ? COLOR_SCHEME.DARK : COLOR_SCHEME.LIGHT}
-                               backgroundColor={COLOR.PRIMARY_DARK}/>
+            <KeyboardAvoidingView behavior="padding">
+                <StatusBar hidden={true} barStyle={Platform.OS === 'ios' ? COLOR_SCHEME.DARK : COLOR_SCHEME.LIGHT}
+                           backgroundColor={COLOR.PRIMARY_DARK}/>
 
-                    <ImageBackground source={require('../assets/LoginBG.png')} style={{width: '100%', height: '100%', isFlex : '1'}}  resizeMode={'cover'}>
+                <ImageBackground source={require('../assets/LoginBG.png')}
+                                 style={{width: '100%', height: '100%', isFlex: '1'}} resizeMode={'cover'}>
                     <View style={[styles.container]}>
 
                         <View>
                             <View style={styles.loginform}>
-                                {/*<View style={{borderBottomWidth: 1, borderColor:'white'}}>*/}
-                                    {/*<Icon name={'ios-home'} size={27} color={'white'}/>*/}
-                                {/*<TextInput*/}
-                                    {/*underlineColorAndroid='transparent'*/}
-                                    {/*style={styles.forminput}*/}
-                                    {/*placeholder="E-Mail"*/}
-                                    {/*value={this.state.username}*/}
-                                    {/*autoFocus={true}*/}
-                                    {/*returnKeyType={"next"}*/}
-                                    {/*autoCapitalize='none'*/}
-                                    {/*autoCorrect={false}*/}
-                                    {/*onSubmitEditing={() => this._focusNextField('password')}*/}
-                                    {/*onChangeText={(text) => {*/}
-                                        {/*this.setState({username: text})*/}
-                                    {/*}}*/}
-                                    {/*blurOnSubmit={false}/>*/}
-                                {/*</View>*/}
-                                <InputGroup borderType="underline" style={{marginBottom:25, marginTop:50}}>
+
+
+                                <InputGroup borderType="underline" style={{marginBottom: 25, marginTop: 50}}>
                                     <Icon name={'perm-identity'} size={27} color={'white'} type="MaterialIcons"/>
                                     <Input
                                         underlineColorAndroid='transparent'
-                                        style={{color:'white'}}
+                                        style={{color: 'white'}}
                                         placeholder="E-Mail"
                                         value={this.state.username}
                                         autoFocus={true}
@@ -140,11 +169,11 @@ export default class LoginScreen extends React.Component {
                                         blurOnSubmit={false}/>
                                 </InputGroup>
 
-                                <InputGroup borderType="underline" >
+                                <InputGroup borderType="underline">
                                     <Icon name={'lock'} size={27} color={'white'} type="MaterialIcons"/>
                                     <Input
                                         underlineColorAndroid='transparent'
-                                        style={{color:'white'}}
+                                        style={{color: 'white'}}
                                         placeholder="Şifre"
                                         secureTextEntry={true}
                                         ref='password'
@@ -156,25 +185,19 @@ export default class LoginScreen extends React.Component {
 
 
 
+                                <ActivityIndicator size="large" color="#cc3333" animating={this.state.anim}/>
+                                <TouchableHighlight style={styles.login_button} onPress={() => this.loginClicked()}>
 
-                              <TouchableHighlight style={styles.login_button} onPress={() => this.loginClicked()}>
-                                  <Text style={styles.login_button_text}>
-                                      GİRİŞ
-                                  </Text>
-                              </TouchableHighlight>
-                                {/*<TouchableOpacity onPress={() => this.loginClicked()}*/}
-                                                  {/*style={{width: 220, alignSelf: 'center'}}>*/}
-                                    {/*<Text style={styles.loginbutton}>*/}
-                                        {/*LOGIN*/}
-                                    {/*</Text>*/}
-                                {/*</TouchableOpacity>*/}
-                                {/*<TouchableOpacity onPress={() => this.loginWithOneTimeKeyClicked()}*/}
-                                                  {/*style={{width: 220, alignSelf: 'center'}}>*/}
-                                    {/*<Text style={styles.loginbutton}>*/}
-                                        {/*LOGIN WITH ONE TIME KEY*/}
-                                    {/*</Text>*/}
-                                {/*</TouchableOpacity>*/}
+                                        <Text style={styles.login_button_text}>
+                                            GİRİŞ
+                                        </Text>
+
+
+                                </TouchableHighlight>
+
+
                             </View>
+                            <Text style={styles.signup_button_text} onPress={() => this._signUp()}>KAYIT OL</Text>
                         </View>
 
                         <Modal
@@ -195,9 +218,9 @@ export default class LoginScreen extends React.Component {
                             </TouchableHighlight>
                         </Modal>
                     </View>
-                    </ImageBackground>
+                </ImageBackground>
 
-                </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
 
         );
     }
