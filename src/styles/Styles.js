@@ -198,6 +198,17 @@ export default StyleSheet.create({
         marginTop: 15,
         marginBottom: 15
     },
+    file_upload: {
+
+        backgroundColor: '#cc3333',
+        borderRadius: 60,
+        justifyContent: 'center',
+        paddingTop: 15,
+        paddingBottom: 15,
+        width: '70%',
+        alignSelf: 'center'
+
+    },
 
 
 

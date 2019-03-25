@@ -6,6 +6,7 @@ import com.voximplant.reactnative.VoxImplantReactPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 
 import com.facebook.react.ReactApplication;
+import com.imagepicker.ImagePickerPackage;
 //import com.wix.reactnativenotifications.RNNotificationsPackage;
 import com.voximplant.foregroundservice.VIForegroundServicePackage;
 import com.facebook.react.ReactNativeHost;
@@ -32,6 +33,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
         new MainReactPackage(),
+            new ImagePickerPackage(),
             //new RNNotificationsPackage(),
         new VIForegroundServicePackage(),
         new VoxImplantReactPackage(),

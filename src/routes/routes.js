@@ -11,6 +11,8 @@ import SettingsScreen from '../screens/SettingsScreen';
 import CallScreen from '../screens/CallScreen';
 import LawyerList from "../screens/LawyerList";
 import IncomingCallScreen from '../screens/IncomingCallScreen';
+import ConfScreen from '../screens/ConfScreen';
+import FileScreen from '../screens/FilesScreen';
 import {
     SafeAreaView,
     ScrollView,
@@ -79,7 +81,14 @@ const AppStack = createDrawerNavigator(
         },
         Settings: {
             screen: SettingsScreen,
+        },
+        FileScreen: {
+            screen: FileScreen,
+        },
+        ConfScreen: {
+            screen: ConfScreen
         }
+
     }, {
         contentComponent: CustomDrawer,
         contentOptions: {
@@ -96,6 +105,7 @@ const RootStack = createSwitchNavigator(
         Call: CallScreen,
         IncomingCall: IncomingCallScreen,
         CreateUser: CreateUser,
+
     },
     {
         initialRouteName: 'Login',

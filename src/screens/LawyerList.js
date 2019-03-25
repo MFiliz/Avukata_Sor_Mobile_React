@@ -24,7 +24,7 @@ import COLOR_SCHEME from "../styles/ColorScheme";
 import COLOR from "../styles/Color";
 import {Body, Header, Icon, Left, Right, Title} from "native-base";
 import CallButton from "./MainScreen";
-import CustomRow from "../components/ListViewItem";
+//import CustomRow from "../components/ListViewItem";
 import {Voximplant} from "react-native-voximplant";
 import CallManager from "../manager/CallManager";
 
@@ -113,6 +113,10 @@ export default class LawyerList extends React.Component {
         }
     }
 
+    showFiles(){
+        this.props.navigation.navigate("FileScreen");
+    }
+
 
     render() {
         return (
@@ -142,7 +146,7 @@ export default class LawyerList extends React.Component {
 
                             </Right>
                         </Header>
-                        <TouchableWithoutFeedback style={{flex:1, height:70}} onPress={() => this.makeCall(true)}>
+
                             <View style={mystyles.container}>
                                 <Image source={this.state.names[0].image_url} style={mystyles.photo}/>
                                 <View style={mystyles.container_text}>
@@ -154,14 +158,18 @@ export default class LawyerList extends React.Component {
                                     </Text>
                                 </View>
                                 <View style={mystyles.container_icons}>
+                                    <TouchableWithoutFeedback style={{flex:1, height:70}} onPress={() => this.showFiles()}>
                                     <Icon name="event-note" type="MaterialIcons"
                                           style={{color: '#8197c0', paddingRight: 10, fontSize: 35}}/>
+                                    </TouchableWithoutFeedback>
+                                    <TouchableWithoutFeedback style={{flex:1, height:70}} onPress={() => this.makeCall(true)}>
                                     <Icon name="video-call" type="MaterialIcons"
                                           style={{color: '#8197c0', fontSize: 35}}/>
+                                    </TouchableWithoutFeedback>
                                 </View>
 
                             </View>
-                        </TouchableWithoutFeedback>
+
                     </View>
                 </ImageBackground>
             </SafeAreaView>
