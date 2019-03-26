@@ -16,7 +16,7 @@ import {
     SafeAreaView,
     StatusBar,
     AsyncStorage,
-    ImageBackground, ScrollView, KeyboardAvoidingView, Button, ActivityIndicator
+    ImageBackground, ScrollView, KeyboardAvoidingView, Button, ActivityIndicator, Keyboard
 } from 'react-native';
 import {Container, InputGroup, Input, Content} from 'native-base';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -107,6 +107,7 @@ export default class LoginScreen extends React.Component {
                 await AsyncStorage.setItem('token', response.entityData.token);
                 await AsyncStorage.setItem('userType', response.entityData.userType.toString());
                 await AsyncStorage.setItem('passwordHash', response.entityData.passwordHash);
+                await AsyncStorage.setItem('balance', response.entityData.balance);
             })();
             LoginManager.getInstance().loginWithPassword(response.entityData.userName + "@avukatasortest.mdogankaya.voximplant.com", response.entityData.passwordHash)
         } else {
@@ -119,6 +120,7 @@ export default class LoginScreen extends React.Component {
     }
 
     loginClicked() {
+        Keyboard.dismiss();
         this.setState({anim: true});
         this.loginWebApp();
         // LoginManager.getInstance().loginWithPassword(this.state.username + ".voximplant.com", this.password);

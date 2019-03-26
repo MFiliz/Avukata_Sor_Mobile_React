@@ -31,6 +31,7 @@ import {Header, InputGroup, Left, Right, Icon, Body, Title} from "native-base";
 import * as navigation from "react-navigation";
 
 
+
 export default class MainScreen extends React.Component {
     // static defaultNavigationOptions = ({ navigation }) => {
     //     const params = navigation.state.params || {};
@@ -67,7 +68,7 @@ export default class MainScreen extends React.Component {
         this.state = {
             isModalOpen: false,
             modalText: '',
-            isSuccess: props.navigation.getParam('isSuccess',3),
+            isSuccess: props.navigation.getParam('isSuccess',10),
         }
     }
 
@@ -77,6 +78,8 @@ export default class MainScreen extends React.Component {
         }
         if(this.state.isSuccess == 0){
             this.setState({ isModalOpen: true, modalText: 'Ödeme Esnasında Bir Sorun Oluştu' });
+        }if(this.state.isSuccess == 2){
+            this.setState({ isModalOpen: true, modalText: 'Krediniz Bittiği İçin Görüşme Sonlandırılmıştır.' });
         }
 
         this.props.navigation.setParams({ settingsClick: this._goToSettings, backClicked: this._goToLogin });
@@ -171,6 +174,7 @@ export default class MainScreen extends React.Component {
 
                         </Right>
                     </Header>
+
                     {/*<TextInput*/}
                         {/*underlineColorAndroid='transparent'*/}
                         {/*style={[styles.forminput, styles.margin]}*/}

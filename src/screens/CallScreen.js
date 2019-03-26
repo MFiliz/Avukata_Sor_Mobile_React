@@ -14,7 +14,7 @@ import {
     SafeAreaView,
     StatusBar,
     FlatList,
-    PermissionsAndroid, ImageBackground
+    PermissionsAndroid, ImageBackground, AsyncStorage
 } from 'react-native';
 
 import {Voximplant} from 'react-native-voximplant';
@@ -26,6 +26,7 @@ import CallManager from '../manager/CallManager';
 import styles from '../styles/Styles';
 import VIForegroundService from "@voximplant/react-native-foreground-service";
 import {Body, Header, Icon, Left, Right, Title} from "native-base";
+import CountDown from 'react-native-countdown-component';
 
 const CALL_STATES = {
     DISCONNECTED: 'disconnected',
@@ -42,7 +43,9 @@ export default class CallScreen extends React.Component {
         this.isVideoCall = params ? params.isVideo : false;
         this.isIncoming = params ? params.isIncoming : false;
         this.callState = CALL_STATES.DISCONNECTED;
-
+        this.gecenzaman = 0;
+        this.inilecektutar = 0;
+        this.endDeger = 0;
 
         this.state = {
             isAudioMuted: false,
@@ -54,7 +57,13 @@ export default class CallScreen extends React.Component {
             remoteVideoStreamId: null,
             audioDeviceSelectionVisible: false,
             audioDevices: [],
-            audioDeviceIcon: 'hearing'
+            audioDeviceIcon: 'hearing',
+            tken: '',
+            balance: null,
+            running: false,
+            passingTime: null,
+            parabalance: null,
+            usertype: null
         };
 
         this.call = CallManager.getInstance().getCallById(this.callId);
@@ -63,7 +72,75 @@ export default class CallScreen extends React.Component {
             + ", isIncoming:  " + this.isIncoming + ", callState: " + this.callState);
     }
 
+    async getData() {
+        const tokenValue = await AsyncStorage.getItem('token');
+        this.setState({tken: tokenValue});
+        const usertypeVal = await AsyncStorage.getItem('userType');
+        this.setState({usertype: usertypeVal});
+
+
+        let balanceValue = await AsyncStorage.getItem('balance');
+        this.setState({parabalance: parseInt(balanceValue)});
+        let sonValue;
+        sonValue = parseInt(parseInt(balanceValue) * 60);
+        this.setState({balance: sonValue});
+        if (sonValue == 0) {
+            this.setState({
+                isModalOpen: true,
+                modalText: 'Krediniz Yetersiz Olduğu İçin Arama Yapamazsınız',
+                remoteVideoStreamId: null,
+                localVideoStreamId: null,
+            });
+        }
+
+
+    }
+
+    calculateCallTime() {
+
+        this.gecenzaman += 1;
+        //alert(this.gecenzaman);
+        if ((this.gecenzaman % 60) == 0) {
+            this.sendBalance();
+        }
+        ;
+    }
+
+
+    sendBalance() {
+
+
+        let guncellenecek = parseInt(this.state.parabalance) - 1;
+        this.setState({parabalance: parseInt(guncellenecek)});
+        AsyncStorage.setItem('balance', guncellenecek.toString());
+        if (guncellenecek == 1) {
+            alert("Krediniz Azalıyor.")
+
+        }
+
+
+        fetch('https://avukatasorapi.azurewebsites.net/api/User/UpdateUserBalance', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json-patch+json',
+                'token': this.state.tken,
+            },
+            body: JSON.stringify({
+                balance: -1
+            })
+        }).then(res => res.json())
+            .then(response => {
+
+            })
+            .catch(error => console.error('Error:', error))
+        if (guncellenecek == 0) {
+            this.endCall(1);
+        }
+    }
+
+
     componentDidMount() {
+        this.getData();
         if (this.call) {
             Object.keys(Voximplant.CallEvents).forEach((eventName) => {
                 const callbackName = `_onCall${eventName}`;
@@ -156,7 +233,8 @@ export default class CallScreen extends React.Component {
         }
     }
 
-    endCall() {
+    endCall(deger) {
+        this.endDeger = deger;
         console.log("CallScreen[" + this.callId + "] endCall");
         this.call.getEndpoints().forEach(endpoint => {
             this._setupEndpointListeners(endpoint, false);
@@ -215,11 +293,19 @@ export default class CallScreen extends React.Component {
                 await VIForegroundService.stopService();
             })();
         }
-        this.props.navigation.navigate("App");
+        if (this.endDeger == 1) {
+            this.props.navigation.navigate('Main', {isSuccess: 2});
+        } else {
+            this.props.navigation.navigate("App");
+        }
     };
 
     _onCallConnected = (event) => {
         console.log('CallScreen: _onCallConnected: ' + this.call.callId);
+        if (this.state.usertype == '2') {
+            this.setState({running: true});
+        }
+
         // this.call.sendMessage('Test message');
         // this.call.sendInfo('rn/info', 'test info');
         this.callState = CALL_STATES.CONNECTED;
@@ -342,7 +428,8 @@ export default class CallScreen extends React.Component {
                     }}>
 
                         <Left style={{alignItems: 'flex-start'}}>
-                            <Icon name={'arrow-back'} style={{alignSelf: 'flex-start', color: 'white'}} type="MaterialIcons" onPress={() => this.props.navigation.navigate('Main')}/>
+                            <Icon name={'arrow-back'} style={{alignSelf: 'flex-start', color: 'white'}}
+                                  type="MaterialIcons" onPress={() => this.props.navigation.navigate('Main')}/>
                         </Left>
                         <Body>
                         <Title style={{color: '#8197c0'}}>Avukata Sor</Title>
@@ -351,10 +438,24 @@ export default class CallScreen extends React.Component {
 
                         </Right>
                     </Header>
-                    <View style={{flexDirection: 'column', justifyContent:'center', paddingBottom:20}}>
-                        <Text style={{fontSize:25, color:'white', textAlign: 'center'}}>Gürkan Çoban</Text>
-                        <Text style={{fontSize:15, color:'white', textAlign:'center'}}>Ceza Avukatı</Text>
-                        <Text style={{fontSize:25, color:'white', textAlign:'center'}}>15:00</Text>
+                    <View style={{flexDirection: 'column', justifyContent: 'center', paddingBottom: 20}}>
+                        <Text style={{fontSize: 25, color: 'white', textAlign: 'center'}}>Gürkan Çoban</Text>
+                        <Text style={{fontSize: 15, color: 'white', textAlign: 'center'}}>Ceza Avukatı</Text>
+                        <CountDown
+                            until={this.state.balance}
+                            onFinish={() => alert('finished')}
+                            onPress={() => alert('hello')}
+                            onChange={() => this.calculateCallTime()}
+                            size={25}
+                            showSeparator
+                            timeToShow={['M', 'S']}
+                            timeLabels={{m: null, s: null}}
+                            timeLabelStyle={{color: '#8197c0'}}
+                            digitStyle={{backgroundColor: 'transparent'}}
+                            digitTxtStyle={{color: '#8197c0'}}
+                            separatorStyle={{color: '#8197c0'}}
+                            running={this.state.running}
+                        />
                     </View>
                     <View style={styles.useragent}>
                         <View style={styles.videoPanel}>
@@ -395,7 +496,7 @@ export default class CallScreen extends React.Component {
                                                 buttonPressed={() => this.muteAudio()}/>
                                 )}
                                 {/*<CallButton icon_name='dialpad' color={COLOR.ACCENT}*/}
-                                            {/*buttonPressed={() => this.switchKeypad()}/>*/}
+                                {/*buttonPressed={() => this.switchKeypad()}/>*/}
                                 <CallButton icon_name={this.state.audioDeviceIcon} color={COLOR.ACCENT}
                                             buttonPressed={() => this.switchAudioDevice()}/>
                                 {this.state.isVideoSent ? (
@@ -406,7 +507,7 @@ export default class CallScreen extends React.Component {
                                                 buttonPressed={() => this.sendVideo(true)}/>
                                 )}
                                 <CallButton icon_name='call-end' color={COLOR.RED}
-                                            buttonPressed={() => this.endCall()}/>
+                                            buttonPressed={() => this.endCall(0)}/>
 
                             </View>
                         </View>

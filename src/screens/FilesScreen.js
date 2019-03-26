@@ -94,8 +94,9 @@ export default class  extends Component {
 
     async getData() {
         const usernameValue = await AsyncStorage.getItem('token');
-        //alert(usernameValue);
-        fetch('https://avukatasorapi.azurewebsites.net/api/User/GetActiveDocuments/gece', {
+        const unn= await AsyncStorage.getItem('userName');
+        //alert(unn);
+        fetch('https://avukatasorapi.azurewebsites.net/api/User/GetActiveDocuments/' + unn, {
             method: 'GET',
             headers: {
                 'Accept': 'text/plain',

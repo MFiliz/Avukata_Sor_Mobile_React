@@ -52,11 +52,19 @@ export default class LawyerList extends React.Component {
                     description: 'deneme2 description',
                     image_url: require('../assets/user_icon.png')
                 }
-            ]
+            ],
+            balance: null,
+            running: false,
+            passingTime: null,
+            parabalance: null,
+            usertype: null,
+            modalText: null,
+            isModalOpen: false,
         };
     }
 
     componentDidMount() {
+        this.getData();
         AsyncStorage.getItem('useCallKit')
             .then((value) => {
                 this.setState({
@@ -65,51 +73,83 @@ export default class LawyerList extends React.Component {
             });
     }
 
+    async getData() {
+        const tokenValue = await AsyncStorage.getItem('token');
+        this.setState({tken: tokenValue});
+        const usertypeVal = await AsyncStorage.getItem('userType');
+        this.setState({usertype: usertypeVal});
+
+
+        let balanceValue = await AsyncStorage.getItem('balance');
+        this.setState({parabalance: parseInt(balanceValue)});
+        let sonValue;
+        sonValue = parseInt(parseInt(balanceValue) * 60);
+        this.setState({balance: sonValue});
+
+
+    }
+
+    _closeModal() {
+        this.setState({isModalOpen: false, modalText: ''});
+        this.props.navigation.navigate("App");
+    }
+
+
 
     async makeCall(isVideoCall) {
-        console.log('MainScreen: make call: ' + this.number + ', isVideo:' + isVideoCall);
-        try {
-            if (Platform.OS === 'android') {
-                let permissions = [PermissionsAndroid.PERMISSIONS.RECORD_AUDIO];
-                if (isVideoCall) {
-                    permissions.push(PermissionsAndroid.PERMISSIONS.CAMERA);
-                }
-                const granted = await PermissionsAndroid.requestMultiple(permissions);
-                const recordAudioGranted = granted['android.permission.RECORD_AUDIO'] === 'granted';
-                const cameraGranted = granted['android.permission.CAMERA'] === 'granted';
-                if (recordAudioGranted) {
-                    if (isVideoCall && !cameraGranted) {
-                        console.warn('MainScreen: makeCall: camera permission is not granted');
+
+        if(parseInt(this.state.balance) > 0) {
+            console.log('MainScreen: make call: ' + this.number + ', isVideo:' + isVideoCall);
+            try {
+                if (Platform.OS === 'android') {
+                    let permissions = [PermissionsAndroid.PERMISSIONS.RECORD_AUDIO];
+                    if (isVideoCall) {
+                        permissions.push(PermissionsAndroid.PERMISSIONS.CAMERA);
+                    }
+                    const granted = await PermissionsAndroid.requestMultiple(permissions);
+                    const recordAudioGranted = granted['android.permission.RECORD_AUDIO'] === 'granted';
+                    const cameraGranted = granted['android.permission.CAMERA'] === 'granted';
+                    if (recordAudioGranted) {
+                        if (isVideoCall && !cameraGranted) {
+                            console.warn('MainScreen: makeCall: camera permission is not granted');
+                            return;
+                        }
+                    } else {
+                        console.warn('MainScreen: makeCall: record audio permission is not granted');
                         return;
                     }
-                } else {
-                    console.warn('MainScreen: makeCall: record audio permission is not granted');
-                    return;
                 }
-            }
-            const callSettings = {
-                video: {
-                    sendVideo: isVideoCall,
-                    receiveVideo: isVideoCall
+                const callSettings = {
+                    video: {
+                        sendVideo: isVideoCall,
+                        receiveVideo: isVideoCall
+                    }
+                };
+                if (Platform.OS === 'ios' && parseInt(Platform.Version, 10) >= 10) {
+                    const useCallKitString = await AsyncStorage.getItem('useCallKit');
+                    callSettings.setupCallKit = JSON.parse(useCallKitString);
                 }
-            };
-            if (Platform.OS === 'ios' && parseInt(Platform.Version, 10) >= 10) {
-                const useCallKitString = await AsyncStorage.getItem('useCallKit');
-                callSettings.setupCallKit = JSON.parse(useCallKitString);
+                let call = await Voximplant.getInstance().call(this.number, callSettings);
+                let callManager = CallManager.getInstance();
+                callManager.addCall(call);
+                if (callSettings.setupCallKit) {
+                    callManager.startOutgoingCallViaCallKit(isVideoCall, this.number);
+                }
+                this.props.navigation.navigate('Call', {
+                    callId: call.callId,
+                    isVideo: isVideoCall,
+                    isIncoming: false
+                });
+            } catch (e) {
+                console.warn('MainScreen: makeCall failed: ' + e);
             }
-            let call = await Voximplant.getInstance().call(this.number, callSettings);
-            let callManager = CallManager.getInstance();
-            callManager.addCall(call);
-            if (callSettings.setupCallKit) {
-                callManager.startOutgoingCallViaCallKit(isVideoCall, this.number);
-            }
-            this.props.navigation.navigate('Call', {
-                callId: call.callId,
-                isVideo: isVideoCall,
-                isIncoming: false
+        }else{
+            this.setState({
+                isModalOpen: true,
+                modalText: 'Krediniz Yetersiz Olduğu İçin Arama Yapamazsınız',
+                remoteVideoStreamId: null,
+                localVideoStreamId: null,
             });
-        } catch (e) {
-            console.warn('MainScreen: makeCall failed: ' + e);
         }
     }
 
@@ -171,6 +211,24 @@ export default class LawyerList extends React.Component {
                             </View>
 
                     </View>
+
+                    <Modal
+                        animationType='fade'
+                        transparent={true}
+                        visible={this.state.isModalOpen}
+                        onRequestClose={() => {
+                        }}>
+                        <TouchableHighlight
+                            onPress={(e) => this._closeModal()}
+                            style={styles.container}>
+                            <View style={[styles.container, styles.modalBackground]}>
+                                <View
+                                    style={[styles.innerContainer, styles.innerContainerTransparent]}>
+                                    <Text>{this.state.modalText}</Text>
+                                </View>
+                            </View>
+                        </TouchableHighlight>
+                    </Modal>
                 </ImageBackground>
             </SafeAreaView>
         );
