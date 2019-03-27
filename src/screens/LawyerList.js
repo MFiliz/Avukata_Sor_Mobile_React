@@ -138,7 +138,8 @@ export default class LawyerList extends React.Component {
                 this.props.navigation.navigate('Call', {
                     callId: call.callId,
                     isVideo: isVideoCall,
-                    isIncoming: false
+                    isIncoming: false,
+                    displayName: 'Gürkan Çoban'
                 });
             } catch (e) {
                 console.warn('MainScreen: makeCall failed: ' + e);

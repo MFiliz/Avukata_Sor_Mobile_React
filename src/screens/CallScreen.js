@@ -46,7 +46,7 @@ export default class CallScreen extends React.Component {
         this.gecenzaman = 0;
         this.inilecektutar = 0;
         this.endDeger = 0;
-
+        this.displayname = params ? params.displayName : null;
         this.state = {
             isAudioMuted: false,
             isVideoSent: this.isVideoCall,
@@ -63,13 +63,14 @@ export default class CallScreen extends React.Component {
             running: false,
             passingTime: null,
             parabalance: null,
-            usertype: null
+            usertype: null,
+
         };
 
         this.call = CallManager.getInstance().getCallById(this.callId);
 
         console.log("CallScreen: ctr: callid: " + this.callId + ", isVideoCall: " + this.isVideoCall
-            + ", isIncoming:  " + this.isIncoming + ", callState: " + this.callState);
+            + ", isIncoming:  " + this.isIncoming + ", callState: " + this.callState );
     }
 
     async getData() {
@@ -348,6 +349,7 @@ export default class CallScreen extends React.Component {
     _onEndpointRemoteVideoStreamAdded = (event) => {
         console.log('CallScreen: _onEndpointRemoteVideoStreamAdded: callid: ' + this.call.callId + ' endpoint id: ' + event.endpoint.id);
         this.setState({remoteVideoStreamId: event.videoStream.id});
+        this.setState({displayname: event.displayName});
     };
 
     _onEndpointRemoteVideoStreamRemoved = (event) => {
@@ -439,12 +441,10 @@ export default class CallScreen extends React.Component {
                         </Right>
                     </Header>
                     <View style={{flexDirection: 'column', justifyContent: 'center', paddingBottom: 20}}>
-                        <Text style={{fontSize: 25, color: 'white', textAlign: 'center'}}>Gürkan Çoban</Text>
-                        <Text style={{fontSize: 15, color: 'white', textAlign: 'center'}}>Ceza Avukatı</Text>
+                        <Text style={{fontSize: 25, color: 'white', textAlign: 'center'}}>{this.displayname}</Text>
+                        <Text style={{fontSize: 15, color: 'white', textAlign: 'center'}}></Text>
                         <CountDown
                             until={this.state.balance}
-                            onFinish={() => alert('finished')}
-                            onPress={() => alert('hello')}
                             onChange={() => this.calculateCallTime()}
                             size={25}
                             showSeparator

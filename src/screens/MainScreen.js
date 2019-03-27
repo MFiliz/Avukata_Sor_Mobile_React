@@ -195,7 +195,7 @@ export default class MainScreen extends React.Component {
                         visible={this.state.isModalOpen}
                         onRequestClose={() => { }}>
                         <TouchableHighlight
-                            onPress={(e) => this.setState({ isModalOpen: false, modalText: '' })}
+                            onPress={(e) => this.setState({ isModalOpen: false, modalText: '',isSuccess: 10  })}
                             style={styles.container}>
                             <View style={[styles.container, styles.modalBackground]}>
                                 <View

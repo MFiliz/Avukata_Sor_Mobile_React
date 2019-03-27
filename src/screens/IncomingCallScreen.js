@@ -84,7 +84,8 @@ export default class IncomingCallScreen extends React.Component {
         this.props.navigation.navigate('Call', {
             callId: this.call.callId,
             isVideo: withVideo,
-            isIncoming: true
+            isIncoming: true,
+            displayName: this.state.displayName
         });
     }
 
