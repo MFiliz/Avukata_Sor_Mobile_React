@@ -174,7 +174,7 @@ export default class MainScreen extends React.Component {
 
                         </Right>
                     </Header>
-
+{/*a*/}
                     {/*<TextInput*/}
                         {/*underlineColorAndroid='transparent'*/}
                         {/*style={[styles.forminput, styles.margin]}*/}
