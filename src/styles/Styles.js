@@ -209,6 +209,15 @@ export default StyleSheet.create({
         alignSelf: 'center'
 
     },
+    credit_insert_button: {
+        color: 'white',
+        fontSize: 18,
+        alignSelf: 'center',
+        textAlign: 'center',
+        paddingTop: 10,
+        paddingBottom: 10
+
+    },
 
 
 });

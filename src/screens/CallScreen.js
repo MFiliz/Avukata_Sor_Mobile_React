@@ -10,6 +10,7 @@ import {
     View,
     Modal,
     TouchableHighlight,
+    TouchableOpacity,
     Platform,
     SafeAreaView,
     StatusBar,
@@ -477,8 +478,13 @@ export default class CallScreen extends React.Component {
                             separatorStyle={{color: '#8197c0'}}
                             running={this.state.running}
                         />
-                        <Button color="#cc3333" onPress={() => this.updateState()}
-                                title="KREDİ YÜKLE"/>
+                        <TouchableOpacity style={{backgroundColor: '#cc3333'}} onPress={() => this.updateState()} >
+                            <View>
+                                <Text style={styles.credit_insert_button}>KREDİ YÜKLE</Text>
+                            </View>
+                        </TouchableOpacity>
+                        {/*<Button color="#cc3333" onPress={() => this.updateState()}*/}
+                        {/*        title="KREDİ YÜKLE"/>*/}
                     </View>
                     <View style={styles.useragent}>
                         <View style={styles.videoPanel}>
