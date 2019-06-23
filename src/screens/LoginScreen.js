@@ -107,7 +107,9 @@ export default class LoginScreen extends React.Component {
                 await AsyncStorage.setItem('token', response.entityData.token);
                 await AsyncStorage.setItem('userType', response.entityData.userType.toString());
                 await AsyncStorage.setItem('passwordHash', response.entityData.passwordHash);
-                await AsyncStorage.setItem('balance', response.entityData.balance);
+                await AsyncStorage.setItem('balance', response.entityData.minutes.toString());
+                global.token = response.entityData.token;
+                global.minutes=  response.entityData.minutes.toString();
             })();
             LoginManager.getInstance().loginWithPassword(response.entityData.userName + "@avukatasortest.mdogankaya.voximplant.com", response.entityData.passwordHash)
         } else {

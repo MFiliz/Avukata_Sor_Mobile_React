@@ -10,10 +10,7 @@ import {Header, Icon, Left, Right,Body, Title} from "native-base";
 let _this;
 export default class BuyCredit extends React.Component {
     static navigationOptions = {
-        drawerIcon: ({tintColor }) => (
-            <Icon name ="add-shopping-cart" type="MaterialIcons" style={{color: 'white'}}/>
-        ),
-        title: "Kredi Al"
+        drawerLabel: () => null
     };
 
     componentDidMount() {

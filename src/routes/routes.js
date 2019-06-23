@@ -44,6 +44,11 @@ const CustomDrawer = (props) => (
 
                 <DrawerItems {...props} style={{backgroundColor: 'white', color: 'white'}}/>
             </ScrollView>
+            <View style={{alignItems:'center', justifyContent:'center',}}>
+                <Text style={styles.settings_button_text}>
+                    Bakiyeniz: { global.minutes} DK
+                </Text>
+            </View>
             <View style={styles.container_nav}>
                 <TouchableHighlight style={styles.settings_button} onPress={() => _goToSettings(props)}>
                     <View style={{alignItems:'center', justifyContent:'center',}}>

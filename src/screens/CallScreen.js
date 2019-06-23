@@ -14,9 +14,10 @@ import {
     SafeAreaView,
     StatusBar,
     FlatList,
-    PermissionsAndroid, ImageBackground, AsyncStorage
+    PermissionsAndroid, ImageBackground, AsyncStorage, Button
 } from 'react-native';
 
+import PayModal from '../components/PayModal';
 import {Voximplant} from 'react-native-voximplant';
 import CallButton from '../components/CallButton';
 import {Keypad} from '../components/Keypad';
@@ -44,7 +45,6 @@ export default class CallScreen extends React.Component {
         this.isIncoming = params ? params.isIncoming : false;
         this.callState = CALL_STATES.DISCONNECTED;
         this.gecenzaman = 0;
-        this.inilecektutar = 0;
         this.endDeger = 0;
         this.displayname = params ? params.displayName : null;
         this.state = {
@@ -59,11 +59,11 @@ export default class CallScreen extends React.Component {
             audioDevices: [],
             audioDeviceIcon: 'hearing',
             tken: '',
-            balance: null,
             running: false,
             passingTime: null,
-            parabalance: null,
             usertype: null,
+            paymentModal : false,
+            minutes: 0
 
         };
 
@@ -80,12 +80,11 @@ export default class CallScreen extends React.Component {
         this.setState({usertype: usertypeVal});
 
 
-        let balanceValue = await AsyncStorage.getItem('balance');
-        this.setState({parabalance: parseInt(balanceValue)});
-        let sonValue;
-        sonValue = parseInt(parseInt(balanceValue) * 60);
-        this.setState({balance: sonValue});
-        if (sonValue == 0) {
+        let balanceValue = global.minutes;
+        this.setState({minutes: parseInt(balanceValue)});
+        //alert(this.state.minutes);
+
+        if (balanceValue == 0) {
             this.setState({
                 isModalOpen: true,
                 modalText: 'Krediniz Yetersiz Olduğu İçin Arama Yapamazsınız',
@@ -103,6 +102,7 @@ export default class CallScreen extends React.Component {
         //alert(this.gecenzaman);
         if ((this.gecenzaman % 60) == 0) {
             this.sendBalance();
+
         }
         ;
     }
@@ -111,10 +111,15 @@ export default class CallScreen extends React.Component {
     sendBalance() {
 
 
-        let guncellenecek = parseInt(this.state.parabalance) - 1;
-        this.setState({parabalance: parseInt(guncellenecek)});
+        let guncellenecek = parseInt(this.state.minutes) - 1;
+        console.log("state.min: " + this.state.minutes);
+        console.log("güncellenecek: " + guncellenecek);
+
+        this.setState({minutes: guncellenecek});
         AsyncStorage.setItem('balance', guncellenecek.toString());
-        if (guncellenecek == 1) {
+        global.minutes = guncellenecek.toString();
+        console.log("gloval: " + global.minutes);
+        if (guncellenecek == 3) {
             alert("Krediniz Azalıyor.")
 
         }
@@ -127,7 +132,7 @@ export default class CallScreen extends React.Component {
                 'token': this.state.tken,
             },
             body: JSON.stringify({
-                balance: -1
+                minutes: -1
             })
         }).then(res => res.json())
             .then(response => {
@@ -416,6 +421,22 @@ export default class CallScreen extends React.Component {
         );
     };
 
+    updateState = (minute) => {
+        this.setState({
+            paymentModal: !this.state.paymentModal
+        });
+
+        this.setState({minutes: parseInt(minute)});
+        this.gecenzaman = 0;
+    }
+    justClosePayModal = () => {
+        this.setState({
+            paymentModal: !this.state.paymentModal
+        });
+
+        this.setState({minutes: parseInt(global.minutes)});
+
+    }
     render() {
         return (
             <SafeAreaView style={styles.safearea}>
@@ -444,18 +465,20 @@ export default class CallScreen extends React.Component {
                         <Text style={{fontSize: 25, color: 'white', textAlign: 'center'}}>{this.displayname}</Text>
                         <Text style={{fontSize: 15, color: 'white', textAlign: 'center'}}></Text>
                         <CountDown
-                            until={this.state.balance}
+                            until={parseInt(parseInt(this.state.minutes) * 60)}
                             onChange={() => this.calculateCallTime()}
                             size={25}
                             showSeparator
-                            timeToShow={['M', 'S']}
-                            timeLabels={{m: null, s: null}}
+                            timeToShow={['H' ,'M', 'S']}
+                            timeLabels={{h:null, m: null, s: null}}
                             timeLabelStyle={{color: '#8197c0'}}
                             digitStyle={{backgroundColor: 'transparent'}}
                             digitTxtStyle={{color: '#8197c0'}}
                             separatorStyle={{color: '#8197c0'}}
                             running={this.state.running}
                         />
+                        <Button color="#cc3333" onPress={() => this.updateState()}
+                                title="KREDİ YÜKLE"/>
                     </View>
                     <View style={styles.useragent}>
                         <View style={styles.videoPanel}>
@@ -556,6 +579,22 @@ export default class CallScreen extends React.Component {
                                 </View>
                             </TouchableHighlight>
                         </Modal>
+
+                        <Modal
+                            animationType='fade'
+                            transparent={false}
+                            visible={this.state.paymentModal}
+                            //onRequestClose={() => this.paymentModalClose()}
+                        >
+                            <TouchableHighlight
+                                //onPress={(e) => this._closeModal()}
+                                style={styles.container}>
+                                <View>
+                                   <PayModal updateState = {this.updateState} closeModal = {this.justClosePayModal}/>
+                                </View>
+                            </TouchableHighlight>
+                        </Modal>
+
                     </View>
                 </ImageBackground>
             </SafeAreaView>
