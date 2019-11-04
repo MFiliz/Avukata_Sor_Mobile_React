@@ -57,7 +57,7 @@ export default class BuyCredit extends React.Component {
 
         return(
             <WebView
-                source={{ uri: 'https://avukatasortest.azurewebsites.net/account/productsmobile?token=' + this.state.tken }}
+                source={{ uri: 'https://testavukatasor.azurewebsites.net/account/productsmobile?token=' + this.state.tken }}
                 bounces={true}
                 style={[
                     {

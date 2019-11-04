@@ -60,7 +60,7 @@ export default class  extends Component {
                     },
                     body: data,
                 };
-                fetch("https://avukatasorapi.azurewebsites.net/api/User/UploadDocument", config)
+                fetch("https://testavukatasorapi.azurewebsites.net/api/User/UploadDocument", config)
                     .then((checkStatusAndGetJSONResponse)=>{
                         console.log(checkStatusAndGetJSONResponse);
                         this.getData();
@@ -96,7 +96,7 @@ export default class  extends Component {
         const usernameValue = await AsyncStorage.getItem('token');
         const unn= await AsyncStorage.getItem('userName');
         //alert(unn);
-        fetch('https://avukatasorapi.azurewebsites.net/api/User/GetActiveDocuments/' + unn, {
+        fetch('https://testavukatasorapi.azurewebsites.net/api/User/GetActiveDocuments/' + unn, {
             method: 'GET',
             headers: {
                 'Accept': 'text/plain',

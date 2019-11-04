@@ -126,7 +126,7 @@ export default class CallScreen extends React.Component {
         }
 
 
-        fetch('https://avukatasorapi.azurewebsites.net/api/User/UpdateUserBalance', {
+        fetch('https://testavukatasorapi.azurewebsites.net/api/User/UpdateUserBalance', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json-patch+json',

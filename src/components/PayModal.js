@@ -34,7 +34,7 @@ export default class PayModal extends React.Component {
             if (_this.state.cardData.status.number == "valid" && _this.state.cardData.status.expiry == "valid" && _this.state.cardData.status.cvc == "valid") {
 
                 _this.setState({isLoading: true});
-                fetch('https://avukatasorapi.azurewebsites.net/api/Payment/Create', {
+                fetch('https://testavukatasorapi.azurewebsites.net/api/Payment/Create', {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
@@ -63,7 +63,7 @@ export default class PayModal extends React.Component {
 
     UpdateBalance(response) {
         if (response.entityData.status == "SUCCESS") {
-            fetch('https://avukatasorapi.azurewebsites.net/api/User/UpdateUserBalance', {
+            fetch('https://testavukatasorapi.azurewebsites.net/api/User/UpdateUserBalance', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -83,7 +83,7 @@ export default class PayModal extends React.Component {
     }
 
     UpdateUserInfo() {
-        fetch('https://avukatasorapi.azurewebsites.net/api/User/GetUserInfo', {
+        fetch('https://testavukatasorapi.azurewebsites.net/api/User/GetUserInfo', {
             headers: {
                 'token': global.token
             }
@@ -99,7 +99,7 @@ export default class PayModal extends React.Component {
     }
 
     getProduct = () => {
-        fetch('https://avukatasorapi.azurewebsites.net/api/Product/GetActiveProductList', {
+        fetch('https://testavukatasorapi.azurewebsites.net/api/Product/GetActiveProductList', {
             headers: {
                 'token': global.token
             }

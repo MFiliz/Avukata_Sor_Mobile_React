@@ -38,7 +38,7 @@ export default class LawyerList extends React.Component {
 
     constructor(props) {
         super(props);
-        this.number = 'mdogankaya';
+        this.number = 'avukat';
         this.state = {
             useCallKit: false,
             names: [

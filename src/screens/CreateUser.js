@@ -63,7 +63,7 @@ export default class CreateUser extends React.Component {
             this.setState({isModalOpen: true, modalText: 'Lütfen Tüm bilgileri Eksiksiz Giriniz.'})
         } else {
             this.setState({anim: true});
-            fetch('https://avukatasorapi.azurewebsites.net/api/User/Create', {
+            fetch('https://testavukatasorapi.azurewebsites.net/api/User/Create', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',

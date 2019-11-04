@@ -79,7 +79,7 @@ export default class LoginScreen extends React.Component {
     }
 
     loginWebApp() {
-        fetch('https://avukatasorapi.azurewebsites.net/api/User/Login', {
+        fetch('https://testavukatasorapi.azurewebsites.net/api/User/Login', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

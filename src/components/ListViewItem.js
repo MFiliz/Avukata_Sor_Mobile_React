@@ -9,7 +9,7 @@ export default class CustomRow extends React.Component {
 
     }
     navme = (urr) => {
-       this.props.urr.navigate('ConfScreen',{url : 'https://avukatasorapi.azurewebsites.net' +  urr})
+       this.props.urr.navigate('ConfScreen',{url : 'https://testavukatasorapi.azurewebsites.net' +  urr})
     };
 
 
