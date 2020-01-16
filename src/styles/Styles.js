@@ -11,6 +11,10 @@ export default StyleSheet.create({
     safearea: {
         flex: 1,
     },
+    safearea2: {
+        flex: 1,
+        flexDirection: "column"
+    },
     aligncenter: {
         flexDirection: 'column',
         justifyContent: 'center'
@@ -63,9 +67,21 @@ export default StyleSheet.create({
         flexDirection: 'column',
 
     },
+    useragent2: {
+        flex: 3,
+
+    },
     selfview: {
         position: 'absolute',
         right: 0,
+        bottom: 10,
+        width: 100,
+        height: 120,
+    },
+
+    selfview2: {
+        position: 'absolute',
+        left: 0,
         bottom: 10,
         width: 100,
         height: 120,
@@ -78,6 +94,25 @@ export default StyleSheet.create({
         position: 'relative',
 
     },
+
+    //conference
+    videoPanelConf: {
+        flex: 1,
+        flexDirection: "row",
+        flexWrap: "wrap",
+        justifyContent:"flex-start"
+
+    },
+
+    remotevideo2: {
+        width: 300,
+        height: 300,
+        margin: 10
+    },
+
+
+    //end cond
+
     call_controls: {
         height: 70,
     },
@@ -101,14 +136,14 @@ export default StyleSheet.create({
         justifyContent: 'center',
         alignSelf: 'center',
         fontSize: 22,
-        color:COLOR.WHITE
+        color: COLOR.WHITE
     },
     incoming_call1: {
         justifyContent: 'center',
         alignSelf: 'center',
         fontSize: 30,
-        marginTop:50,
-        color:COLOR.WHITE
+        marginTop: 50,
+        color: COLOR.WHITE
     },
     login_button: {
 
@@ -120,6 +155,27 @@ export default StyleSheet.create({
         marginTop: 30,
         marginBottom: 30
     },
+
+    confButton: {
+
+        backgroundColor: '#cc3333',
+        borderRadius: 60,
+        justifyContent: 'center',
+        paddingTop: 0,
+        paddingBottom: 0,
+        marginTop: 0,
+        marginBottom: 0
+    },
+
+    btnContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        backgroundColor: '#F5FCFF',
+        borderWidth: 1
+    },
+
+
     login_button_text: {
         color: 'white',
         fontSize: 18,
@@ -129,10 +185,10 @@ export default StyleSheet.create({
     },
     exit_button: {
         backgroundColor: 'transparent',
-        flex:1,
-        paddingBottom:25,
-        justifyContent:'center',
-        alignItems:'center'
+        flex: 1,
+        paddingBottom: 25,
+        justifyContent: 'center',
+        alignItems: 'center'
 
 
     },
@@ -142,17 +198,13 @@ export default StyleSheet.create({
 
         fontSize: 20,
     },
-    exit_button_icon:{
-
-
-
-    },
+    exit_button_icon: {},
     settings_button: {
         backgroundColor: 'transparent',
-        flex:1,
-        paddingBottom:25,
-        justifyContent:'center',
-        alignItems:'center'
+        flex: 1,
+        paddingBottom: 25,
+        justifyContent: 'center',
+        alignItems: 'center'
 
     },
     settings_button_text: {
@@ -161,27 +213,27 @@ export default StyleSheet.create({
 
         fontSize: 20,
     },
-    settings_button_icon:{
+    settings_button_icon: {
         justifyContent: 'center',
-        alignSelf:'center',
-        alignItems:'center'
+        alignSelf: 'center',
+        alignItems: 'center'
 
 
     },
-    container_nav:{
-        color:'red',
+    container_nav: {
+        color: 'red',
         flex: 1,
-        flexDirection:'row',
-        alignItems:'flex-end',
-        justifyContent:'space-around',
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        justifyContent: 'space-around',
 
 
     },
     signup_button_text: {
         color: '#8197c0',
-        textAlign:'center',
+        textAlign: 'center',
         fontSize: 16,
-        paddingBottom:30,
+        paddingBottom: 30,
     },
     signupform: {
         paddingHorizontal: 20,

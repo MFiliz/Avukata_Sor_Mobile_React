@@ -13,6 +13,7 @@ import LawyerList from "../screens/LawyerList";
 import IncomingCallScreen from '../screens/IncomingCallScreen';
 import ConfScreen from '../screens/ConfScreen';
 import FileScreen from '../screens/FilesScreen';
+import Konferans from '../screens/TopluKonferans';
 import {
     SafeAreaView,
     ScrollView,
@@ -92,7 +93,11 @@ const AppStack = createDrawerNavigator(
         },
         ConfScreen: {
             screen: ConfScreen
+        },
+        Konferans: {
+            screen: Konferans
         }
+
 
     }, {
         contentComponent: CustomDrawer,

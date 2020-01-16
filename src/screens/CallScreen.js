@@ -303,7 +303,7 @@ export default class CallScreen extends React.Component {
         if (this.endDeger == 1) {
             this.props.navigation.navigate('Main', {isSuccess: 2});
         } else {
-            this.props.navigation.navigate("App");
+            this.props.navigation.navigate("Main");
         }
     };
 
@@ -355,6 +355,9 @@ export default class CallScreen extends React.Component {
     _onEndpointRemoteVideoStreamAdded = (event) => {
         console.log('CallScreen: _onEndpointRemoteVideoStreamAdded: callid: ' + this.call.callId + ' endpoint id: ' + event.endpoint.id);
         this.setState({remoteVideoStreamId: event.videoStream.id});
+        console.log("------------------------------------------------------------------------------");
+        console.log(event);
+        console.log("------------------------------------------------------------------------------");
         this.setState({displayname: event.displayName});
     };
 

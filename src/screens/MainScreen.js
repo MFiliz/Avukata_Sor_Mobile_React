@@ -29,7 +29,7 @@ import COLOR_SCHEME from '../styles/ColorScheme';
 import styles from '../styles/Styles';
 import {Header, InputGroup, Left, Right, Icon, Body, Title} from "native-base";
 import * as navigation from "react-navigation";
-
+import {Col, Row, Grid} from "react-native-easy-grid";
 
 
 export default class MainScreen extends React.Component {
@@ -55,10 +55,10 @@ export default class MainScreen extends React.Component {
     //     };
     // };
 
-    static navigationOptions ={
-      drawerIcon: ({tintColor }) => (
-         <Icon name ="home" type="MaterialIcons" style={{color: 'white'}}/>
-      ),title:'Ana Sayfa'
+    static navigationOptions = {
+        drawerIcon: ({tintColor}) => (
+            <Icon name="home" type="MaterialIcons" style={{color: 'white'}}/>
+        ), title: 'Ana Sayfa'
     };
 
 
@@ -68,21 +68,22 @@ export default class MainScreen extends React.Component {
         this.state = {
             isModalOpen: false,
             modalText: '',
-            isSuccess: props.navigation.getParam('isSuccess',10),
+            isSuccess: props.navigation.getParam('isSuccess', 10),
         }
     }
 
     componentDidMount() {
-        if (this.state.isSuccess == 1){
-            this.setState({ isModalOpen: true, modalText: 'Ödemeniz Başarılı Bir Şekilde Alınmıştır' });
+        if (this.state.isSuccess == 1) {
+            this.setState({isModalOpen: true, modalText: 'Ödemeniz Başarılı Bir Şekilde Alınmıştır'});
         }
-        if(this.state.isSuccess == 0){
-            this.setState({ isModalOpen: true, modalText: 'Ödeme Esnasında Bir Sorun Oluştu' });
-        }if(this.state.isSuccess == 2){
-            this.setState({ isModalOpen: true, modalText: 'Krediniz Bittiği İçin Görüşme Sonlandırılmıştır.' });
+        if (this.state.isSuccess == 0) {
+            this.setState({isModalOpen: true, modalText: 'Ödeme Esnasında Bir Sorun Oluştu'});
+        }
+        if (this.state.isSuccess == 2) {
+            this.setState({isModalOpen: true, modalText: 'Krediniz Bittiği İçin Görüşme Sonlandırılmıştır.'});
         }
 
-        this.props.navigation.setParams({ settingsClick: this._goToSettings, backClicked: this._goToLogin });
+        this.props.navigation.setParams({settingsClick: this._goToSettings, backClicked: this._goToLogin});
         LoginManager.getInstance().on('onConnectionClosed', this._connectionClosed);
     }
 
@@ -97,8 +98,8 @@ export default class MainScreen extends React.Component {
     _goToLogin = () => {
 
 
-         LoginManager.getInstance().logout();
-         this.props.navigation.navigate("Login");
+        LoginManager.getInstance().logout();
+        this.props.navigation.navigate("Login");
     };
 
     _connectionClosed = () => {
@@ -156,26 +157,34 @@ export default class MainScreen extends React.Component {
 
         return (
             <SafeAreaView style={styles.safearea}>
-                <StatusBar hidden={true} />
+                <StatusBar hidden={true}/>
+
+                <ImageBackground source={require('../assets/main_background.png')}
+                                 style={{width: '100%', height: '100%', isFlex: '1'}} resizeMode={'cover'}>
+                    <View style={styles.useragent}>
+
+                        <Header style={{
+                            backgroundColor: 'transparent',
+                            shadowColor: 'transparent',
+                            shadowRadius: 0,
+                            elevation: 0
+                        }}>
+
+                            <Left style={{alignItems: 'flex-start'}}>
+                                <Icon name={'menu'} style={{alignSelf: 'flex-start', color: 'white'}}
+                                      type="MaterialIcons" onPress={() => this.props.navigation.openDrawer()}/>
+                            </Left>
+                            <Body>
+                                <Title style={{color: '#8197c0'}}>Avukata Sor</Title>
+                            </Body>
+                            <Right>
+
+                            </Right>
+                        </Header>
 
 
-                <ImageBackground source={require('../assets/main_background.png')} style={{width: '100%', height: '100%', isFlex : '1'}}  resizeMode={'cover'}>
-                <View style={styles.useragent}>
-
-                    <Header style={{backgroundColor: 'transparent', shadowColor: 'transparent', shadowRadius: 0, elevation:0}}>
-
-                        <Left style={{alignItems: 'flex-start'}}>
-                            <Icon name={'menu'} style={{alignSelf:'flex-start', color : 'white'}}  type="MaterialIcons" onPress={() => this.props.navigation.openDrawer()}/>
-                        </Left>
-                        <Body>
-                        <Title style={{color : '#8197c0'}}>Avukata Sor</Title>
-                        </Body>
-                        <Right>
-
-                        </Right>
-                    </Header>
-{/*a*/}
-                    {/*<TextInput*/}
+                        {/*a*/}
+                        {/*<TextInput*/}
                         {/*underlineColorAndroid='transparent'*/}
                         {/*style={[styles.forminput, styles.margin]}*/}
                         {/*onChangeText={(text) => { this.number = text }}*/}
@@ -184,28 +193,29 @@ export default class MainScreen extends React.Component {
                         {/*autoCapitalize='none'*/}
                         {/*autoCorrect={false}*/}
                         {/*blurOnSubmit={true} />*/}
-                    {/*<View style={{ flexDirection: 'row', justifyContent: 'space-around', height: 90 }}>*/}
+                        {/*<View style={{ flexDirection: 'row', justifyContent: 'space-around', height: 90 }}>*/}
                         {/*<CallButton icon_name='call' color={COLOR.ACCENT} buttonPressed={() => this.makeCall(false)} />*/}
                         {/*<CallButton icon_name='videocam' color={COLOR.ACCENT} buttonPressed={() => this.makeCall(true)} />*/}
-                    {/*</View>*/}
+                        {/*</View>*/}
 
-                    <Modal
-                        animationType='fade'
-                        transparent={true}
-                        visible={this.state.isModalOpen}
-                        onRequestClose={() => { }}>
-                        <TouchableHighlight
-                            onPress={(e) => this.setState({ isModalOpen: false, modalText: '',isSuccess: 10  })}
-                            style={styles.container}>
-                            <View style={[styles.container, styles.modalBackground]}>
-                                <View
-                                    style={[styles.innerContainer, styles.innerContainerTransparent]}>
-                                    <Text>{this.state.modalText}</Text>
+                        <Modal
+                            animationType='fade'
+                            transparent={true}
+                            visible={this.state.isModalOpen}
+                            onRequestClose={() => {
+                            }}>
+                            <TouchableHighlight
+                                onPress={(e) => this.setState({isModalOpen: false, modalText: '', isSuccess: 10})}
+                                style={styles.container}>
+                                <View style={[styles.container, styles.modalBackground]}>
+                                    <View
+                                        style={[styles.innerContainer, styles.innerContainerTransparent]}>
+                                        <Text>{this.state.modalText}</Text>
+                                    </View>
                                 </View>
-                            </View>
-                        </TouchableHighlight>
-                    </Modal>
-                </View>
+                            </TouchableHighlight>
+                        </Modal>
+                    </View>
                 </ImageBackground>
             </SafeAreaView>
         );

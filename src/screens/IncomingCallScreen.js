@@ -17,12 +17,18 @@ import CallManager from '../manager/CallManager';
 import { Voximplant } from 'react-native-voximplant';
 import COLOR from '../styles/Color';
 import styles from '../styles/Styles';
-
+import VIForegroundService from "@voximplant/react-native-foreground-service";
+const CALL_STATES = {
+    DISCONNECTED: 'disconnected',
+    CONNECTING: 'connecting',
+    CONNECTED: 'connected'
+};
 export default class IncomingCallScreen extends React.Component {
 
     constructor(props) {
         super(props);
         const params = this.props.navigation.state.params;
+
 
         const callId = params ? params.callId : null;
         this.isVideoCall = params ? params.isVideo : false;
@@ -95,6 +101,12 @@ export default class IncomingCallScreen extends React.Component {
 
     _onCallDisconnected = (event) => {
         CallManager.getInstance().removeCall(event.call);
+        this.callState = CALL_STATES.DISCONNECTED;
+        if (Platform.OS === 'android' && Platform.Version >= 26 && this.callState === CALL_STATES.CONNECTED) {
+            (async () => {
+                await VIForegroundService.stopService();
+            })();
+        }
         this.props.navigation.navigate("App");
     };
 
